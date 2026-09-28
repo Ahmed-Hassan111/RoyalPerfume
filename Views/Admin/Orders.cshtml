@@ -1,0 +1,254 @@
+@{
+    ViewData["Title"] = "إدارة الطلبات - أطياب رويال";
+    Layout = null;
+    var orders = ViewBag.Orders as List<RoyalPerfume.Models.Order> ?? new();
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<aside class="admin-sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">👑</div>
+        <div>
+            <div class="sidebar-logo-title">أطياب رويال</div>
+            <div class="sidebar-logo-sub">لوحة التحكم</div>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/Admin" class="sidebar-link"><i class="fas fa-tachometer-alt"></i> الرئيسية</a>
+        <a href="/Admin/Products" class="sidebar-link"><i class="fas fa-box"></i> المنتجات</a>
+        <a href="/Admin/Orders" class="sidebar-link active"><i class="fas fa-shopping-bag"></i> الطلبات</a>
+        <a href="/Admin/Logout" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+    </nav>
+    <a href="/" class="sidebar-site-link" target="_blank"><i class="fas fa-external-link-alt"></i> زيارة الموقع</a>
+</aside>
+
+<main class="admin-main">
+    <div class="admin-header">
+        <h2 class="admin-page-title"><i class="fas fa-shopping-bag"></i> إدارة الطلبات</h2>
+        <span class="admin-date">إجمالي: @orders.Count طلب</span>
+    </div>
+
+    @if (!orders.Any())
+    {
+        <div class="admin-card">
+            <div class="empty-state">
+                <div style="font-size:64px;margin-bottom:16px;">📭</div>
+                <h3 style="color:#fff;">لا توجد طلبات بعد</h3>
+                <p style="color:#666;margin-top:8px;">ستظهر الطلبات هنا بمجرد أن يبدأ العملاء في الشراء</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="admin-card">
+            <div class="table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>التاريخ</th>
+                            <th>العميل</th>
+                            <th>الهاتف</th>
+                            <th>المحافظة</th>
+                            <th>الدفع</th>
+                            <th>الإجمالي</th>
+                            <th>الإيصال</th>
+                            <th>الحالة</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in orders)
+                        {
+                            <tr>
+                                <td><span class="order-num">#@order.OrderNumber</span></td>
+                                <td style="font-size:12px;color:#888;">@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td><strong>@order.FullName</strong></td>
+                                <td dir="ltr">@order.Phone</td>
+                                <td>@order.Governorate@(!string.IsNullOrEmpty(order.District) ? " - " + order.District : "")</td>
+                                <td>
+                                    @if (order.PaymentMethod == "instapay")
+                                    { <span class="badge badge-instapay">📱 إنستاباي</span> }
+                                    else if (order.PaymentMethod == "cash")
+                                    { <span class="badge badge-cash">💵 كاش</span> }
+                                    else
+                                    { <span class="badge badge-card">💳 بطاقة</span> }
+                                </td>
+                                <td class="price-cell">@order.Total.ToString("N0") ج.م</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(order.ReceiptImagePath))
+                                    {
+                                        <a href="@order.ReceiptImagePath" target="_blank" class="btn-action btn-edit">
+                                            <i class="fas fa-image"></i> عرض
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:#555;font-size:12px;">لا يوجد</span>
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        var statusClass = order.Status switch {
+                                            "confirmed" => "badge-confirmed",
+                                            "pending_review" => "badge-pending",
+                                            "shipped" => "badge-shipped",
+                                            "delivered" => "badge-delivered",
+                                            _ => "badge-pending"
+                                        };
+                                        var statusText = order.Status switch {
+                                            "confirmed" => "مؤكد",
+                                            "pending_review" => "قيد المراجعة",
+                                            "shipped" => "جاري الشحن",
+                                            "delivered" => "تم التوصيل",
+                                            _ => "قيد المراجعة"
+                                        };
+                                    }
+                                    <select class="status-select" 
+                                            onchange="updateStatus('@order.OrderNumber', this.value)"
+                                            data-current="@order.Status">
+                                        @{
+                                            var statusOptions = new[] {
+                                                ("pending_review", "قيد المراجعة"),
+                                                ("confirmed", "مؤكد"),
+                                                ("shipped", "جاري الشحن"),
+                                                ("delivered", "تم التوصيل")
+                                            };
+                                            foreach (var (val, lbl) in statusOptions) {
+                                                if (val == order.Status) {
+                                                    <option value="@val" selected>@lbl</option>
+                                                } else {
+                                                    <option value="@val">@lbl</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="btn-delete-order" onclick="confirmDeleteOrder('@order.OrderNumber', '@order.FullName')" title="حذف الطلب">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Expandable: order items -->
+                            @if (order.Items != null && order.Items.Any())
+                            {
+                                <tr class="order-items-row">
+                                    <td colspan="10" style="background:rgba(255,255,255,0.02);padding:8px 16px;">
+                                        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                                            @foreach (var item in order.Items)
+                                            {
+                                                <div style="display:flex;align-items:center;gap:8px;background:rgba(200,146,42,0.08);border:1px solid rgba(200,146,42,0.2);border-radius:8px;padding:6px 12px;font-size:12px;">
+                                                    <img src="@item.ProductImage" style="width:28px;height:28px;object-fit:cover;border-radius:4px;">
+                                                    <span style="color:#ddd;">@item.ProductName</span>
+                                                    <span style="color:#c8922a;font-weight:700;">×@item.Quantity</span>
+                                                    <span style="color:#888;">@item.TotalPrice.ToString("N0") ج.م</span>
+                                                </div>
+                                            }
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(order.Notes))
+                                        {
+                                            <div style="margin-top:6px;color:#888;font-size:12px;">📝 ملاحظة: @order.Notes</div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</main>
+
+<!-- Delete Confirm Modal -->
+<div id="deleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;align-items:center;justify-content:center;">
+    <div style="background:#1a1a2e;border:1px solid rgba(200,146,42,0.3);border-radius:16px;padding:32px 28px;max-width:420px;width:90%;text-align:center;font-family:Cairo,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+        <div style="font-size:52px;margin-bottom:12px;">🗑️</div>
+        <h3 style="color:#fff;font-size:20px;margin-bottom:8px;">حذف الطلب</h3>
+        <p id="deleteModalMsg" style="color:#aaa;font-size:14px;margin-bottom:24px;"></p>
+        <div style="display:flex;gap:12px;justify-content:center;">
+            <button id="deleteConfirmBtn" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-family:Cairo,sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">تأكيد الحذف</button>
+            <button onclick="closeDeleteModal()" style="background:rgba(255,255,255,0.08);color:#ccc;border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:11px 28px;font-family:Cairo,sans-serif;font-size:15px;cursor:pointer;transition:opacity .2s;" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let _pendingDeleteOrder = null;
+
+function confirmDeleteOrder(orderNumber, customerName) {
+    _pendingDeleteOrder = orderNumber;
+    document.getElementById('deleteModalMsg').textContent =
+        `هل أنت متأكد من حذف الطلب #${orderNumber} للعميل ${customerName}؟ لا يمكن التراجع عن هذا الإجراء.`;
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'flex';
+    document.getElementById('deleteConfirmBtn').onclick = executeDelete;
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    _pendingDeleteOrder = null;
+}
+
+function executeDelete() {
+    if (!_pendingDeleteOrder) return;
+    const orderNumber = _pendingDeleteOrder;
+    closeDeleteModal();
+    fetch('/Admin/DeleteOrder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `orderNumber=${encodeURIComponent(orderNumber)}`
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            showToast(d.message, '#dc2626');
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            showToast('❌ ' + d.message, '#dc2626');
+        }
+    });
+}
+
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
+});
+
+function updateStatus(orderNumber, status) {
+    fetch('/Admin/UpdateOrderStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `orderNumber=${encodeURIComponent(orderNumber)}&status=${encodeURIComponent(status)}`
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            showToast('تم تحديث حالة الطلب ✅', '#16a34a');
+        }
+    });
+}
+
+function showToast(msg, color) {
+    color = color || '#16a34a';
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:${color};color:#fff;padding:12px 24px;border-radius:12px;font-family:Cairo,sans-serif;font-size:14px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3)`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+</script>
+</body>
+</html>

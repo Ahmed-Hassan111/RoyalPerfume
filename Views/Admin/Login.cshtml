@@ -1,0 +1,137 @@
+@{
+    ViewData["Title"] = "تسجيل دخول الأدمن - أطياب رويال";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #0a0a0f;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(200,146,42,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(123,63,228,0.1) 0%, transparent 50%);
+        }
+        .login-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(200,146,42,0.3);
+            border-radius: 24px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            z-index: 1;
+        }
+        .logo-area {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .logo-icon {
+            width: 72px; height: 72px;
+            background: linear-gradient(135deg, #c8922a, #a0721e);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 16px;
+            box-shadow: 0 0 40px rgba(200,146,42,0.4);
+        }
+        .logo-area h1 { color: #fff; font-size: 22px; font-weight: 800; }
+        .logo-area p { color: #888; font-size: 13px; margin-top: 4px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; color: #ccc; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .form-group input {
+            width: 100%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #fff;
+            font-size: 15px;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: #c8922a;
+            background: rgba(200,146,42,0.06);
+            box-shadow: 0 0 0 3px rgba(200,146,42,0.1);
+        }
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, #c8922a, #a0721e);
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(200,146,42,0.4); }
+        .error-msg {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #fca5a5;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .back-link { text-align: center; margin-top: 20px; }
+        .back-link a { color: #888; font-size: 13px; text-decoration: none; }
+        .back-link a:hover { color: #c8922a; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo-area">
+            <div class="logo-icon">👑</div>
+            <h1>لوحة تحكم أطياب رويال</h1>
+            <p>أدخل كلمة السر للدخول</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(ViewBag.Error as string))
+        {
+            <div class="error-msg">🔒 @ViewBag.Error</div>
+        }
+
+        <form method="post" action="/Admin/Login">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label>🔑 كلمة السر</label>
+                <input type="password" name="password" placeholder="أدخل كلمة السر" autofocus required>
+            </div>
+            <button type="submit" class="btn-login">دخول للوحة التحكم ←</button>
+        </form>
+
+        <div class="back-link">
+            <a href="/">← العودة للموقع</a>
+        </div>
+    </div>
+</body>
+</html>

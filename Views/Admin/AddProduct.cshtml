@@ -1,0 +1,164 @@
+@model RoyalPerfume.Models.Product
+@{
+    ViewData["Title"] = "إضافة منتج جديد";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<aside class="admin-sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">👑</div>
+        <div>
+            <div class="sidebar-logo-title">أطياب رويال</div>
+            <div class="sidebar-logo-sub">لوحة التحكم</div>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/Admin" class="sidebar-link"><i class="fas fa-tachometer-alt"></i> الرئيسية</a>
+        <a href="/Admin/Products" class="sidebar-link active"><i class="fas fa-box"></i> المنتجات</a>
+        <a href="/Admin/Orders" class="sidebar-link"><i class="fas fa-shopping-bag"></i> الطلبات</a>
+        <a href="/Admin/Logout" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+    </nav>
+    <a href="/" class="sidebar-site-link" target="_blank"><i class="fas fa-external-link-alt"></i> زيارة الموقع</a>
+</aside>
+
+<main class="admin-main">
+    <div class="admin-header">
+        <h2 class="admin-page-title"><i class="fas fa-plus-circle"></i> إضافة منتج جديد</h2>
+        <a href="/Admin/Products" class="btn-secondary-admin"><i class="fas fa-arrow-right"></i> رجوع</a>
+    </div>
+
+    <div class="admin-card">
+        <form method="post" action="/Admin/AddProduct" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <div class="form-row">
+                <div class="form-field full-width">
+                    <label class="field-label">📷 صورة المنتج</label>
+                    <div class="img-upload-area" onclick="document.getElementById('NewImage').click()">
+                        <div id="imgUploadPlaceholder">
+                            <i class="fas fa-cloud-upload-alt" style="font-size:32px;color:#c8922a;margin-bottom:8px;display:block;"></i>
+                            <div style="color:#c8922a;font-weight:600;">اضغط لاختيار صورة</div>
+                            <div style="color:#666;font-size:12px;margin-top:4px;">JPG, PNG, WebP</div>
+                        </div>
+                        <img id="imgPreview" src="" style="display:none;max-height:120px;border-radius:10px;">
+                    </div>
+                    <input type="file" id="NewImage" name="NewImage" accept="image/*" style="display:none;" onchange="previewImage(this)">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">الاسم بالعربية *</label>
+                    <input type="text" name="NameAr" class="field-input" placeholder="مثال: عود الملكي رويال" required>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">الاسم بالإنجليزية *</label>
+                    <input type="text" name="Name" class="field-input" placeholder="e.g. Royal Oud" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">الوصف بالعربية</label>
+                    <textarea name="DescriptionAr" class="field-input field-textarea" placeholder="وصف العطر..."></textarea>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">الوصف بالإنجليزية</label>
+                    <textarea name="Description" class="field-input field-textarea" placeholder="Product description..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">💰 السعر (ج.م) *</label>
+                    <input type="number" name="Price" class="field-input" value="0" min="0" step="0.01" required>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">🏷️ السعر القديم (0 = لا يوجد)</label>
+                    <input type="number" name="OldPrice" class="field-input" value="0" min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">التصنيف</label>
+                    <select name="Category" class="field-input">
+                        <option value="عطور رجالية">عطور رجالية</option>
+                        <option value="عطور نسائية">عطور نسائية</option>
+                        <option value="عود وعربية">عود وعربية</option>
+                        <option value="عطور مشتركة">عطور مشتركة</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">الحجم</label>
+                    <input type="text" name="Volume" class="field-input" placeholder="مثال: 100 جم">
+                </div>
+                <div class="form-field">
+                    <label class="field-label">التركيز</label>
+                    <input type="text" name="Concentration" class="field-input" placeholder="مثال: Extrait 35%">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">📦 المخزون</label>
+                    <input type="number" name="Stock" class="field-input" value="10" min="0">
+                </div>
+                <div class="form-field">
+                    <label class="field-label">التقييم</label>
+                    <input type="number" name="Rating" class="field-input" value="4.5" min="0" max="5" step="0.1">
+                </div>
+                <div class="form-field">
+                    <label class="field-label">عدد المراجعات</label>
+                    <input type="number" name="ReviewCount" class="field-input" value="0" min="0">
+                </div>
+            </div>
+
+            <div class="form-row" style="gap:24px;align-items:center;">
+                <label class="toggle-label">
+                    <input type="checkbox" name="IsFeatured" value="true" class="toggle-checkbox">
+                    <span class="toggle-slider"></span>
+                    ⭐ منتج مميز
+                </label>
+                <label class="toggle-label">
+                    <input type="checkbox" name="IsOnSale" value="true" class="toggle-checkbox">
+                    <span class="toggle-slider"></span>
+                    🔥 في العروض
+                </label>
+            </div>
+
+            <div style="margin-top:32px;display:flex;gap:12px;">
+                <button type="submit" class="btn-primary-admin"><i class="fas fa-plus"></i> إضافة المنتج</button>
+                <a href="/Admin/Products" class="btn-secondary-admin">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imgPreview').src = e.target.result;
+            document.getElementById('imgPreview').style.display = 'block';
+            document.getElementById('imgUploadPlaceholder').style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+</body>
+</html>

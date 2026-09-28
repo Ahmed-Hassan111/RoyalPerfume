@@ -1,0 +1,116 @@
+@{
+    ViewData["Title"] = "إدارة المنتجات - أطياب رويال";
+    Layout = null;
+    var products = ViewBag.Products as List<RoyalPerfume.Models.Product> ?? new();
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<aside class="admin-sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">👑</div>
+        <div>
+            <div class="sidebar-logo-title">أطياب رويال</div>
+            <div class="sidebar-logo-sub">لوحة التحكم</div>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/Admin" class="sidebar-link"><i class="fas fa-tachometer-alt"></i> الرئيسية</a>
+        <a href="/Admin/Products" class="sidebar-link active"><i class="fas fa-box"></i> المنتجات</a>
+        <a href="/Admin/Orders" class="sidebar-link"><i class="fas fa-shopping-bag"></i> الطلبات</a>
+        <a href="/Admin/Logout" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+    </nav>
+    <a href="/" class="sidebar-site-link" target="_blank"><i class="fas fa-external-link-alt"></i> زيارة الموقع</a>
+</aside>
+
+<main class="admin-main">
+    <div class="admin-header">
+        <h2 class="admin-page-title"><i class="fas fa-box"></i> إدارة المنتجات</h2>
+        <a href="/Admin/AddProduct" class="btn-primary-admin"><i class="fas fa-plus"></i> إضافة منتج جديد</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">✅ @TempData["Success"]</div>
+    }
+
+    <div class="admin-card">
+        <div class="table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>الصورة</th>
+                        <th>الاسم بالعربية</th>
+                        <th>الاسم بالإنجليزية</th>
+                        <th>التصنيف</th>
+                        <th>السعر</th>
+                        <th>السعر القديم</th>
+                        <th>المخزون</th>
+                        <th>مميز</th>
+                        <th>عرض</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in products)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@product.ImageUrl" alt="@product.NameAr" 
+                                     style="width:60px;height:60px;object-fit:cover;border-radius:10px;border:1px solid rgba(200,146,42,0.3);">
+                            </td>
+                            <td><strong>@product.NameAr</strong></td>
+                            <td style="font-size:13px;color:#888;">@product.Name</td>
+                            <td><span class="badge badge-cash">@product.Category</span></td>
+                            <td class="price-cell">@product.Price.ToString("N0") ج.م</td>
+                            <td style="color:#888;text-decoration:line-through;font-size:13px;">
+                                @(product.OldPrice > 0 ? product.OldPrice.ToString("N0") + " ج.م" : "-")
+                            </td>
+                            <td>
+                                <span class="@(product.Stock <= 5 ? "badge badge-pending" : "badge badge-confirmed")">
+                                    @product.Stock
+                                </span>
+                            </td>
+                            <td>
+                                @if (product.IsFeatured) { <span class="badge badge-confirmed">⭐ نعم</span> }
+                                else { <span style="color:#555;">لا</span> }
+                            </td>
+                            <td>
+                                @if (product.IsOnSale) { <span class="badge badge-instapay">🔥 نعم</span> }
+                                else { <span style="color:#555;">لا</span> }
+                            </td>
+                            <td>
+                                <div style="display:flex;gap:8px;">
+                                    <a href="/Admin/EditProduct/@product.Id" class="btn-action btn-edit">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </a>
+                                    <form method="post" action="/Admin/DeleteProduct" 
+                                          onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@product.Id">
+                                        <button type="submit" class="btn-action btn-delete">
+                                            <i class="fas fa-trash"></i> حذف
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

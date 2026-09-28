@@ -1,0 +1,102 @@
+@{
+    ViewData["Title"] = "تم تأكيد طلبك - أطياب رويال";
+    var orderNum = ViewBag.OrderNumber ?? "ROY-XXXXXX";
+    var customerName = ViewBag.CustomerName ?? "عزيزنا العميل";
+    var orderTotal = ViewBag.OrderTotal ?? "0";
+}
+
+<section class="success-section">
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            
+            <h2>🎉 تم تأكيد طلبك بنجاح!</h2>
+            <p>شكراً <strong>@customerName</strong>! تم استلام طلبك وسيتم التواصل معك قريباً لتأكيد موعد التوصيل.</p>
+            
+            <div class="order-number-badge">
+                <i class="fas fa-hashtag"></i>
+                رقم الطلب: <strong>@orderNum</strong>
+            </div>
+
+            <div style="background: var(--cream); border-radius: 12px; padding: 20px; margin: 20px 0; text-align: right;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+                    <span style="color: var(--text-muted);">إجمالي الطلب</span>
+                    <span style="font-size: 24px; font-weight: 900; color: var(--gold-dark);">@orderTotal ج.م</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 14px;">
+                    <i class="fas fa-shipping-fast" style="color: var(--gold);"></i>
+                    التوصيل خلال 48-72 ساعة من تأكيد الطلب
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; text-align: right;">
+                <div style="background: rgba(72,187,120,0.08); border: 1px solid rgba(72,187,120,0.2); border-radius: 10px; padding: 14px;">
+                    <div style="font-size: 24px; margin-bottom: 6px;">📧</div>
+                    <div style="font-size: 13px; font-weight: 600; color: #276749;">تأكيد بالإيميل</div>
+                    <div style="font-size: 12px; color: var(--text-muted);">تم إرسال تفاصيل الطلب</div>
+                </div>
+                <div style="background: rgba(200,146,42,0.08); border: 1px solid rgba(200,146,42,0.2); border-radius: 10px; padding: 14px;">
+                    <div style="font-size: 24px; margin-bottom: 6px;">📱</div>
+                    <div style="font-size: 13px; font-weight: 600; color: var(--gold-dark);">تواصل واتساب</div>
+                    <div style="font-size: 12px; color: var(--text-muted);">سيتصل بك المندوب قريباً</div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
+                <a asp-controller="Home" asp-action="Index" class="btn-hero-primary" style="display:inline-flex;">
+                    <i class="fas fa-home"></i>
+                    الرئيسية
+                </a>
+                <a asp-controller="Products" asp-action="Index" class="btn-hero-secondary" style="display:inline-flex;">
+                    <i class="fas fa-shopping-bag"></i>
+                    تسوق المزيد
+                </a>
+                <a href="https://wa.me/@(_cfg["Contact:WhatsApp"])?text=مرحباً،%20طلبت%20بالرقم:%20@orderNum" target="_blank" 
+                   class="btn-hero-secondary" style="display:inline-flex; border-color: #25d366; color: #25d366;">
+                    <i class="fab fa-whatsapp"></i>
+                    تواصل معنا
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+<script>
+// Confetti animation
+(function() {
+    const colors = ['#c8922a', '#e8c87a', '#2c1810', '#ffd700', '#ffffff'];
+    for (let i = 0; i < 80; i++) {
+        const confetti = document.createElement('div');
+        const size = Math.random() * 10 + 5;
+        confetti.style.cssText = `
+            position: fixed;
+            top: -20px;
+            left: ${Math.random() * 100}vw;
+            width: ${size}px;
+            height: ${size}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+            opacity: ${Math.random() * 0.8 + 0.2};
+            animation: confetti-fall ${Math.random() * 3 + 2}s ease-in ${Math.random() * 2}s forwards;
+            z-index: 9999;
+        `;
+        document.body.appendChild(confetti);
+    }
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        @@keyframes confetti-fall {
+            to { top: 110vh; transform: rotate(720deg); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    setTimeout(() => {
+        document.querySelectorAll('[style*="confetti-fall"]').forEach(el => el.remove());
+    }, 5000);
+})();
+</script>
+}

@@ -1,0 +1,163 @@
+@model RoyalPerfume.Models.Product
+@{
+    ViewData["Title"] = $"{Model.NameAr} - أطياب رويال";
+    var related = ViewBag.RelatedProducts as List<RoyalPerfume.Models.Product> ?? new List<RoyalPerfume.Models.Product>();
+}
+
+<section style="padding: 50px 0 80px;">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav style="margin-bottom: 30px; font-size: 14px; color: var(--text-muted);">
+            <a asp-controller="Home" asp-action="Index" style="color: var(--gold); text-decoration: none;">الرئيسية</a>
+            <span class="mx-2">/</span>
+            <a asp-controller="Products" asp-action="Index" style="color: var(--gold); text-decoration: none;">العطور</a>
+            <span class="mx-2">/</span>
+            <span>@Model.NameAr</span>
+        </nav>
+
+        <div class="row g-5 align-items-start">
+            <!-- Product Image -->
+            <div class="col-lg-5">
+                <div style="background: linear-gradient(135deg, #f9f1e8, #f5ede0); border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+                    <img src="@Model.ImageUrl" alt="@Model.NameAr" style="width: 100%; aspect-ratio: 1; object-fit: cover;">
+                </div>
+                @if (Model.IsOnSale)
+                {
+                    <div style="margin-top: 16px; background: linear-gradient(135deg, rgba(229,62,62,0.1), rgba(229,62,62,0.05)); border: 1px solid rgba(229,62,62,0.3); border-radius: 12px; padding: 14px 20px; text-align: center;">
+                        <span style="color: #e53e3e; font-weight: 700; font-size: 16px;">🔥 عرض محدود - وفر @Model.DiscountPercent%</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Product Details -->
+            <div class="col-lg-7">
+                <div style="background: white; border-radius: 20px; padding: 35px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                    <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+                        <span style="background: rgba(200,146,42,0.1); color: var(--gold-dark); padding: 5px 14px; border-radius: 50px; font-size: 13px; font-weight: 600;">@Model.Category</span>
+                        <span style="background: rgba(200,146,42,0.1); color: var(--gold-dark); padding: 5px 14px; border-radius: 50px; font-size: 13px;">@Model.Concentration</span>
+                        <span style="background: rgba(200,146,42,0.1); color: var(--gold-dark); padding: 5px 14px; border-radius: 50px; font-size: 13px;">@Model.Volume</span>
+                    </div>
+
+                    <h1 style="font-size: 30px; font-weight: 900; color: var(--brown-medium); margin-bottom: 16px;">@Model.NameAr</h1>
+
+                    <div class="product-rating" style="margin-bottom: 20px;">
+                        <span class="stars">
+                            @for (int i = 0; i < 5; i++) {
+                                <i class="@(i < (int)Model.Rating ? "fas" : "far") fa-star"></i>
+                            }
+                        </span>
+                        <span style="font-size: 16px; font-weight: 700; color: var(--brown-medium);">@Model.Rating</span>
+                        <span class="rating-text">(@Model.ReviewCount تقييم موثق)</span>
+                    </div>
+
+                    <p style="color: var(--text-secondary); font-size: 16px; line-height: 1.8; margin-bottom: 24px;">@Model.DescriptionAr</p>
+
+                    <!-- Price -->
+                    <div style="background: var(--cream); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <span style="font-size: 36px; font-weight: 900; color: var(--gold-dark);">@Model.Price.ToString("N0") <small style="font-size: 18px;">ج.م</small></span>
+                            @if (Model.OldPrice > 0)
+                            {
+                                <span style="font-size: 18px; color: var(--text-muted); text-decoration: line-through;">@Model.OldPrice.ToString("N0") ج.م</span>
+                                <span style="background: #e53e3e; color: white; padding: 4px 12px; border-radius: 50px; font-size: 14px; font-weight: 700;">وفر @((Model.OldPrice - Model.Price).ToString("N0")) ج.م</span>
+                            }
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 13px; margin: 8px 0 0;">شامل الشحن والتوصيل السريع</p>
+                    </div>
+
+                    <!-- Add to Cart -->
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                        <input type="hidden" name="productId" value="@Model.Id">
+                        <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: center;">
+                            <div class="quantity-control">
+                                <button type="button" class="qty-btn" onclick="changeQty(-1)">-</button>
+                                <input type="number" name="quantity" id="qty" class="qty-input" value="1" min="1" max="@Model.Stock">
+                                <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-add-cart" style="font-size: 18px; padding: 16px;">
+                            <i class="fas fa-shopping-bag"></i>
+                            أضف للسلة
+                        </button>
+                    </form>
+
+                    <!-- Guarantees -->
+                    <div style="margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(72,187,120,0.08); border-radius: 10px; border: 1px solid rgba(72,187,120,0.2);">
+                            <span style="color: #276749; font-size: 20px;">✅</span>
+                            <span style="font-size: 13px; color: #276749; font-weight: 600;">ضمان الأصالة 100%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(200,146,42,0.08); border-radius: 10px; border: 1px solid rgba(200,146,42,0.2);">
+                            <span style="color: var(--gold-dark); font-size: 20px;">🔄</span>
+                            <span style="font-size: 13px; color: var(--gold-dark); font-weight: 600;">إرجاع 14 يوم</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(66,153,225,0.08); border-radius: 10px; border: 1px solid rgba(66,153,225,0.2);">
+                            <span style="color: #2b6cb0; font-size: 20px;">🚚</span>
+                            <span style="font-size: 13px; color: #2b6cb0; font-weight: 600;">توصيل سريع 48 ساعة</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(128,90,213,0.08); border-radius: 10px; border: 1px solid rgba(128,90,213,0.2);">
+                            <span style="color: #553c9a; font-size: 20px;">💵</span>
+                            <span style="font-size: 13px; color: #553c9a; font-weight: 600;">الدفع عند الاستلام</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        @if (related.Any())
+        {
+            <div style="margin-top: 70px;">
+                <div class="section-header">
+                    <h2 class="section-title">منتجات <span>مشابهة</span></h2>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="row g-4">
+                    @foreach (var rp in related)
+                    {
+                        <div class="col-lg-3 col-md-6">
+                            <div class="product-card">
+                                <div class="product-image-wrap">
+                                    <img src="@rp.ImageUrl" alt="@rp.NameAr" loading="lazy">
+                                    @if (rp.IsOnSale && rp.OldPrice > 0)
+                                    {
+                                        <span class="product-badge">خصم @rp.DiscountPercent%</span>
+                                    }
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-category">@rp.Category</div>
+                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@rp.Id" class="text-decoration-none">
+                                        <h3 class="product-name">@rp.NameAr</h3>
+                                    </a>
+                                    <div class="product-price-wrap">
+                                        <span class="price-current">@rp.Price.ToString("N0") ج.م</span>
+                                    </div>
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                        <input type="hidden" name="productId" value="@rp.Id">
+                                        <button type="submit" class="btn-add-cart">
+                                            <i class="fas fa-shopping-bag"></i> أضف للسلة
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<a href="https://wa.me/@(_cfg["Contact:WhatsApp"])" target="_blank" class="whatsapp-float">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+@section Scripts {
+<script>
+function changeQty(delta) {
+    const inp = document.getElementById('qty');
+    const newVal = Math.max(1, Math.min(parseInt(inp.max), (parseInt(inp.value) || 1) + delta));
+    inp.value = newVal;
+}
+</script>
+}

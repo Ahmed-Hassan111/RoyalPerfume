@@ -1,0 +1,212 @@
+@model RoyalPerfume.Models.Product
+@{
+    bool isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "إضافة منتج جديد" : "تعديل المنتج - " + Model.NameAr;
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<aside class="admin-sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">👑</div>
+        <div>
+            <div class="sidebar-logo-title">أطياب رويال</div>
+            <div class="sidebar-logo-sub">لوحة التحكم</div>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/Admin" class="sidebar-link"><i class="fas fa-tachometer-alt"></i> الرئيسية</a>
+        <a href="/Admin/Products" class="sidebar-link active"><i class="fas fa-box"></i> المنتجات</a>
+        <a href="/Admin/Orders" class="sidebar-link"><i class="fas fa-shopping-bag"></i> الطلبات</a>
+        <a href="/Admin/Logout" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+    </nav>
+    <a href="/" class="sidebar-site-link" target="_blank"><i class="fas fa-external-link-alt"></i> زيارة الموقع</a>
+</aside>
+
+<main class="admin-main">
+    <div class="admin-header">
+        <h2 class="admin-page-title">
+            <i class="fas @(isNew ? "fa-plus-circle" : "fa-edit")"></i>
+            @(isNew ? "إضافة منتج جديد" : "تعديل المنتج")
+        </h2>
+        <a href="/Admin/Products" class="btn-secondary-admin"><i class="fas fa-arrow-right"></i> رجوع</a>
+    </div>
+
+    <div class="admin-card">
+        <form method="post" 
+              action="@(isNew ? "/Admin/AddProduct" : "/Admin/EditProduct")" 
+              enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            @if (!isNew)
+            {
+                <input type="hidden" name="Id" value="@Model.Id">
+                <input type="hidden" name="ImageUrl" value="@Model.ImageUrl">
+                <input type="hidden" name="Rating" value="@Model.Rating">
+                <input type="hidden" name="ReviewCount" value="@Model.ReviewCount">
+            }
+
+            <!-- Current Image Preview -->
+            @if (!isNew && !string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="current-image-preview">
+                    <label class="field-label">الصورة الحالية</label>
+                    <div style="display:flex;align-items:center;gap:16px;">
+                        <img id="currentImg" src="@Model.ImageUrl" alt="@Model.NameAr" 
+                             style="width:100px;height:100px;object-fit:cover;border-radius:14px;border:2px solid rgba(200,146,42,0.4);">
+                        <div>
+                            <div style="color:#ccc;font-size:13px;margin-bottom:8px;">اختر صورة جديدة لاستبدالها</div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Image Upload -->
+            <div class="form-row">
+                <div class="form-field full-width">
+                    <label class="field-label">📷 @(isNew ? "صورة المنتج" : "تغيير الصورة (اختياري)")</label>
+                    <div class="img-upload-area" onclick="document.getElementById('NewImage').click()">
+                        <div id="imgUploadPlaceholder">
+                            <i class="fas fa-cloud-upload-alt" style="font-size:32px;color:#c8922a;margin-bottom:8px;display:block;"></i>
+                            <div style="color:#c8922a;font-weight:600;">اضغط لاختيار صورة</div>
+                            <div style="color:#666;font-size:12px;margin-top:4px;">JPG, PNG, WebP</div>
+                        </div>
+                        <img id="imgPreview" src="" style="display:none;max-height:120px;border-radius:10px;">
+                    </div>
+                    <input type="file" id="NewImage" name="NewImage" accept="image/*" 
+                           style="display:none;" onchange="previewImage(this)">
+                </div>
+            </div>
+
+            <!-- Names -->
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">الاسم بالعربية *</label>
+                    <input type="text" name="NameAr" class="field-input" value="@Model.NameAr" 
+                           placeholder="مثال: عود الملكي رويال" required>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">الاسم بالإنجليزية *</label>
+                    <input type="text" name="Name" class="field-input" value="@Model.Name" 
+                           placeholder="e.g. Royal Oud" required>
+                </div>
+            </div>
+
+            <!-- Descriptions -->
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">الوصف بالعربية</label>
+                    <textarea name="DescriptionAr" class="field-input field-textarea" 
+                              placeholder="وصف العطر بالعربية...">@Model.DescriptionAr</textarea>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">الوصف بالإنجليزية</label>
+                    <textarea name="Description" class="field-input field-textarea" 
+                              placeholder="Product description in English...">@Model.Description</textarea>
+                </div>
+            </div>
+
+            <!-- Price & Old Price -->
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">💰 السعر الحالي (ج.م) *</label>
+                    <input type="number" name="Price" class="field-input" value="@Model.Price" 
+                           min="0" step="0.01" required>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">🏷️ السعر القديم (اتركه 0 إذا لا يوجد)</label>
+                    <input type="number" name="OldPrice" class="field-input" value="@Model.OldPrice" 
+                           min="0" step="0.01">
+                </div>
+            </div>
+
+            <!-- Category, Volume, Concentration -->
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">التصنيف</label>
+                    <select name="Category" class="field-input">
+                        @{
+                            var cats = new[] { "عطور رجالية", "عطور نسائية", "عود وعربية", "عطور مشتركة" };
+                            foreach (var cat in cats) {
+                                if (cat == Model.Category) {
+                                    <option value="@cat" selected>@cat</option>
+                                } else {
+                                    <option value="@cat">@cat</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">الحجم</label>
+                    <input type="text" name="Volume" class="field-input" value="@Model.Volume" 
+                           placeholder="مثال: 100 جم">
+                </div>
+                <div class="form-field">
+                    <label class="field-label">التركيز</label>
+                    <input type="text" name="Concentration" class="field-input" value="@Model.Concentration" 
+                           placeholder="مثال: Extrait 35%">
+                </div>
+            </div>
+
+            <!-- Stock -->
+            <div class="form-row">
+                <div class="form-field">
+                    <label class="field-label">📦 المخزون</label>
+                    <input type="number" name="Stock" class="field-input" value="@Model.Stock" min="0">
+                </div>
+            </div>
+
+            <!-- Toggles -->
+            <div class="form-row" style="gap:24px;align-items:center;">
+                <label class="toggle-label">
+                    <input type="checkbox" name="IsFeatured" value="true" @(Model.IsFeatured ? "checked" : "") class="toggle-checkbox">
+                    <span class="toggle-slider"></span>
+                    ⭐ منتج مميز (Featured)
+                </label>
+                <label class="toggle-label">
+                    <input type="checkbox" name="IsOnSale" value="true" @(Model.IsOnSale ? "checked" : "") class="toggle-checkbox">
+                    <span class="toggle-slider"></span>
+                    🔥 في العروض (On Sale)
+                </label>
+            </div>
+
+            <div style="margin-top:32px;display:flex;gap:12px;">
+                <button type="submit" class="btn-primary-admin">
+                    <i class="fas @(isNew ? "fa-plus" : "fa-save")"></i>
+                    @(isNew ? "إضافة المنتج" : "حفظ التغييرات")
+                </button>
+                <a href="/Admin/Products" class="btn-secondary-admin">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imgPreview').src = e.target.result;
+            document.getElementById('imgPreview').style.display = 'block';
+            document.getElementById('imgUploadPlaceholder').style.display = 'none';
+            // Also update current img if visible
+            const cur = document.getElementById('currentImg');
+            if (cur) cur.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+</body>
+</html>

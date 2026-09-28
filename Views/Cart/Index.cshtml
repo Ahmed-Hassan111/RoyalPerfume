@@ -1,0 +1,183 @@
+@model RoyalPerfume.Models.CartViewModel
+@{
+    ViewData["Title"] = "سلة التسوق - أطياب رويال";
+}
+
+<!-- Page Hero -->
+<div class="page-hero">
+    <div class="container">
+        <h1><i class="fas fa-shopping-bag me-3" style="color:var(--gold);"></i>سلة التسوق</h1>
+        <p>@Model.Items.Sum(i => i.Quantity) منتج في سلتك</p>
+    </div>
+</div>
+
+<section style="padding: 40px 0 80px;">
+    <div class="container">
+        @if (!Model.Items.Any())
+        {
+            <div class="empty-cart">
+                <div class="empty-cart-icon">🛒</div>
+                <h3>سلتك فارغة!</h3>
+                <p>لم تضف أي منتجات بعد. اكتشف تشكيلتنا الرائعة.</p>
+                <a asp-controller="Products" asp-action="Index" class="btn-hero-primary" style="display:inline-flex;">
+                    <i class="fas fa-shopping-bag"></i>
+                    تسوق الآن
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                <!-- Cart Items -->
+                <div class="col-lg-8">
+                    <!-- Coupon Messages -->
+                    @if (TempData["CouponSuccess"] != null)
+                    {
+                        <div style="background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 10px; padding: 14px 20px; margin-bottom: 16px; color: #276749; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                            @TempData["CouponSuccess"]
+                        </div>
+                    }
+                    @if (TempData["CouponError"] != null)
+                    {
+                        <div style="background: #fff5f5; border: 1px solid #fed7d7; border-radius: 10px; padding: 14px 20px; margin-bottom: 16px; color: #9b2c2c; font-weight: 600;">
+                            @TempData["CouponError"]
+                        </div>
+                    }
+
+                    <div class="cart-card">
+                        <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="font-size: 18px; font-weight: 700; color: var(--brown-medium); margin: 0;">
+                                <i class="fas fa-shopping-bag me-2" style="color: var(--gold);"></i>
+                                منتجات السلة
+                            </h3>
+                            <span style="color: var(--text-muted); font-size: 14px;">@Model.Items.Count منتج</span>
+                        </div>
+                        
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="cart-item">
+                                <img src="@item.ProductImage" alt="@item.ProductName" class="cart-item-img">
+                                <div class="cart-item-info">
+                                    <div class="cart-item-name">@item.ProductName</div>
+                                    <div class="cart-item-volume">@item.Volume</div>
+                                    <div class="cart-item-price">@item.TotalPrice.ToString("N0") ج.م</div>
+                                </div>
+                                <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" style="display:flex;align-items:center;gap:8px;">
+                                    <input type="hidden" name="productId" value="@item.ProductId">
+                                    <div class="quantity-control">
+                                        <button type="button" class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                                        <input type="number" name="quantity" class="qty-input" value="@item.Quantity" min="1" max="99" onchange="this.form.submit()">
+                                        <button type="button" class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                                    </div>
+                                    <noscript><button type="submit">تحديث</button></noscript>
+                                </form>
+                                <form asp-controller="Cart" asp-action="RemoveFromCart" method="post">
+                                    <input type="hidden" name="productId" value="@item.ProductId">
+                                    <button type="submit" class="btn-remove" title="حذف">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 12px;">
+                        <a asp-controller="Products" asp-action="Index" style="display:flex;align-items:center;gap:8px;color:var(--gold);text-decoration:none;font-weight:600;font-size:15px;">
+                            <i class="fas fa-arrow-right"></i>
+                            متابعة التسوق
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="col-lg-4">
+                    <div class="order-summary-card">
+                        <div class="order-summary-header">
+                            <i class="fas fa-receipt me-2"></i>ملخص الطلب
+                        </div>
+                        <div class="order-summary-body">
+                            <!-- Coupon -->
+                            @if (string.IsNullOrEmpty(Model.CouponCode))
+                            {
+                                <form asp-controller="Cart" asp-action="ApplyCoupon" method="post">
+                                    <label style="font-size: 14px; font-weight: 600; color: var(--brown-light); margin-bottom: 8px; display: block;">
+                                        <i class="fas fa-tag me-2" style="color: var(--gold);"></i>كوبون خصم
+                                    </label>
+                                    <div class="coupon-form">
+                                        <input type="text" name="couponCode" class="coupon-input" placeholder="ROYAL10 أو ROYAL20">
+                                        <button type="submit" class="btn-coupon">تطبيق</button>
+                                    </div>
+                                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+                                        💡 جرب: ROYAL10 أو WELCOME20
+                                    </p>
+                                </form>
+                            }
+                            else
+                            {
+                                <div style="background: rgba(72,187,120,0.1); border: 1px solid rgba(72,187,120,0.3); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 14px; color: #276749; font-weight: 600;">
+                                    ✅ كوبون <strong>@Model.CouponCode</strong> مطبق
+                                </div>
+                            }
+
+                            <div class="summary-row">
+                                <span>المجموع الفرعي</span>
+                                <span class="amount-gold">@Model.Subtotal.ToString("N0") ج.م</span>
+                            </div>
+                            @if (Model.Discount > 0)
+                            {
+                                <div class="summary-row" style="color: var(--success);">
+                                    <span>خصم الكوبون</span>
+                                    <span>- @Model.Discount.ToString("N0") ج.م</span>
+                                </div>
+                            }
+                            <div class="summary-row">
+                                <span>الشحن والتوصيل</span>
+                                <span class="amount-free">مجاني 🎁</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>الإجمالي للدفع</span>
+                                <span style="color: var(--gold-dark);">@Model.Total.ToString("N0") ج.م</span>
+                            </div>
+                            
+                            @if (Model.Subtotal > 5000)
+                            {
+                                <div style="margin-bottom: 12px; background: rgba(72,187,120,0.08); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #276749;">
+                                    🎁 لقد وفرت أكثر من @((Model.Subtotal - Model.Total).ToString("N0")) ج.م
+                                </div>
+                            }
+
+                            <a asp-controller="Checkout" asp-action="Index" class="btn-checkout">
+                                <i class="fas fa-lock"></i>
+                                إتمام الطلب
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
+                            
+                            <div style="text-align: center; margin-top: 14px; display: flex; justify-content: center; gap: 16px;">
+                                <span style="font-size: 24px; color: var(--text-muted);" title="Visa"><i class="fab fa-cc-visa"></i></span>
+                                <span style="font-size: 24px; color: var(--text-muted);" title="Mastercard"><i class="fab fa-cc-mastercard"></i></span>
+                                <span style="font-size: 24px; color: var(--text-muted);" title="Cash"><i class="fas fa-money-bill-wave"></i></span>
+                                <span style="font-size: 24px; color: var(--text-muted);" title="Instapay"><i class="fas fa-mobile-alt"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<a href="https://wa.me/@(_cfg["Contact:WhatsApp"])" target="_blank" class="whatsapp-float">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+@section Scripts {
+<script>
+function updateQty(btn, delta) {
+    const form = btn.closest('form');
+    const input = form.querySelector('input[name="quantity"]');
+    const newVal = Math.max(1, (parseInt(input.value) || 1) + delta);
+    input.value = newVal;
+    form.submit();
+}
+</script>
+}

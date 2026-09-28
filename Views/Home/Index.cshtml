@@ -1,0 +1,247 @@
+@{
+    ViewData["Title"] = "أطياب رويال - عطور فاخرة أصيلة";
+}
+@using RoyalPerfume.Models
+
+<!-- ======= HERO ======= -->
+<section class="hero-section">
+    <div class="hero-particles"></div>
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 hero-content">
+                <span class="hero-badge">✨ عطور فرنسية وعربية أصيلة</span>
+                <h1 class="hero-title">
+                    نفس فخامة وفوحان<br>
+                    <span>العطر الأصيل</span>
+                </h1>
+                <p class="hero-subtitle">
+                    اكتشف مجموعتنا الحصرية من أرقى العطور العالمية بأسعار لا تُقاوم
+                </p>
+                <div class="hero-discount-badge">
+                    <div>
+                        <span class="discount-num">20%</span>
+                        <small style="display:block; color: var(--gold-light); font-size: 11px;">خصم</small>
+                    </div>
+                    <div class="discount-text">
+                        <strong>فقط من سعر<br>de Parfum</strong><br>
+                        <small style="color: rgba(245,237,224,0.6);">استخدم كود: <strong style="color: var(--gold);">ROYAL20</strong></small>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <a asp-controller="Products" asp-action="Index" class="btn-hero-primary">
+                        <i class="fas fa-shopping-bag"></i>
+                        تسوق الآن
+                    </a>
+                    <a href="#featured" class="btn-hero-secondary">
+                        <i class="fas fa-star"></i>
+                        المميزات
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="stat-num">+500</span>
+                        <span class="stat-label">عطر مختلف</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="stat-num">48h</span>
+                        <span class="stat-label">ثبات مضمون</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="stat-num">14</span>
+                        <span class="stat-label">يوم ضمان</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image-container">
+                    <img src="/images/hero.jpg" alt="أطياب رويال" class="hero-image-main">
+                    <div class="hero-image-float float-1">
+                        <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">⭐</div>
+                        <div>
+                            <div style="color:white;font-weight:700;font-size:14px;">4.9 تقييم</div>
+                            <div style="color:rgba(245,237,224,0.7);font-size:12px;">+5,000 عميل راضي</div>
+                        </div>
+                    </div>
+                    <div class="hero-image-float float-2">
+                        <div style="font-size:24px;">🚚</div>
+                        <div>
+                            <div style="color:white;font-weight:700;font-size:14px;">توصيل مجاني</div>
+                            <div style="color:rgba(245,237,224,0.7);font-size:12px;">للطلبات فوق 500 ج</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======= FEATURES ======= -->
+<section class="features-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">🌟</div>
+                    <h5>ضمان الأصالة الذهبي</h5>
+                    <p>كل عطر يمر بفحص دقيق للتأكد من أصالته ونقائه قبل الشحن</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h5>شحن سريع وموثوق</h5>
+                    <p>توصيل خلال 24-48 ساعة لجميع محافظات مصر مع التتبع المباشر</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h5>إرجاع مجاني 14 يوم</h5>
+                    <p>غير راضٍ؟ نستعيد منتجك خلال 14 يوم مع استرداد كامل للمبلغ</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">🎁</div>
+                    <h5>هدايا مع كل طلب</h5>
+                    <p>كل طلب فوق 1000 ج.م يحتوي على هدية مفاجأة فاخرة مجاناً</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======= FEATURED PRODUCTS ======= -->
+<section id="featured" style="padding: 80px 0; background: var(--cream-light);">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">🌟 الأكثر مبيعاً</span>
+            <h2 class="section-title">العطور <span>المميزة</span></h2>
+            <div class="section-divider"></div>
+            <p class="section-subtitle">اختيارات بعناية من أفخر العطور العالمية</p>
+        </div>
+        <div class="row g-4">
+            @if (ViewBag.FeaturedProducts != null)
+            {
+                foreach (Product product in ViewBag.FeaturedProducts)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        <div class="product-card">
+                            <div class="product-image-wrap">
+                                <img src="@product.ImageUrl" alt="@product.NameAr" loading="lazy">
+                                @if (product.IsOnSale)
+                                {
+                                    <span class="product-badge">خصم @product.DiscountPercent%</span>
+                                }
+                                <span class="product-badge badge-featured">⭐ مميز</span>
+                                <div class="product-actions">
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                        <input type="hidden" name="productId" value="@product.Id">
+                                        <button type="submit" class="btn-quick-add">
+                                            <i class="fas fa-cart-plus"></i> أضف للسلة
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-category">@product.Category | @product.Concentration</div>
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none">
+                                    <h3 class="product-name">@product.NameAr</h3>
+                                </a>
+                                <div class="product-volume">@product.Volume</div>
+                                <div class="product-rating">
+                                    <span class="stars">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            <i class="@(i < (int)product.Rating ? "fas" : "far") fa-star"></i>
+                                        }
+                                    </span>
+                                    <span class="rating-text">(@product.ReviewCount تقييم)</span>
+                                </div>
+                                <div class="product-price-wrap">
+                                    <span class="price-current">@product.Price.ToString("N0") ج.م</span>
+                                    @if (product.OldPrice > 0)
+                                    {
+                                        <span class="price-old">@product.OldPrice.ToString("N0") ج.م</span>
+                                    }
+                                </div>
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="productId" value="@product.Id">
+                                    <button type="submit" class="btn-add-cart">
+                                        <i class="fas fa-shopping-bag"></i>
+                                        أضف للسلة
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="text-center mt-5">
+            <a asp-controller="Products" asp-action="Index" class="btn-hero-primary" style="display:inline-flex;">
+                <i class="fas fa-th-large"></i>
+                عرض كل العطور
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ======= WHY ROYAL ======= -->
+<section style="padding: 80px 0; background: linear-gradient(135deg, var(--brown-dark), var(--brown-medium)); color: white;">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge" style="color: var(--gold-light);">100%</span>
+            <h2 class="section-title" style="color: white;">لماذا <span>أطياب رويال</span>؟</h2>
+            <div class="section-divider"></div>
+            <p class="section-subtitle" style="color: rgba(245,237,224,0.7);">نقدم لك تجربة عطرية لا مثيل لها</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div style="padding: 30px; border: 1px solid rgba(200,146,42,0.3); border-radius: 16px; height: 100%;">
+                    <div style="font-size: 50px; margin-bottom: 16px;">🏆</div>
+                    <h4 style="color: var(--gold); margin-bottom: 12px;">جودة لا تُضاهى</h4>
+                    <p style="color: rgba(245,237,224,0.7); font-size: 15px;">نستورد مباشرةً من الموردين المعتمدين في فرنسا وتركيا والإمارات</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div style="padding: 30px; border: 1px solid rgba(200,146,42,0.3); border-radius: 16px; height: 100%;">
+                    <div style="font-size: 50px; margin-bottom: 16px;">💰</div>
+                    <h4 style="color: var(--gold); margin-bottom: 12px;">أسعار لا تُصدق</h4>
+                    <p style="color: rgba(245,237,224,0.7); font-size: 15px;">أسعارنا أقل من أسعار الوكلاء الرسميين بنسبة تصل لـ 80%</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div style="padding: 30px; border: 1px solid rgba(200,146,42,0.3); border-radius: 16px; height: 100%;">
+                    <div style="font-size: 50px; margin-bottom: 16px;">⚡</div>
+                    <h4 style="color: var(--gold); margin-bottom: 12px;">خدمة استثنائية</h4>
+                    <p style="color: rgba(245,237,224,0.7); font-size: 15px;">فريق دعم متخصص على مدار 12 ساعة يومياً لخدمتك</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======= CTA ======= -->
+<section style="padding: 80px 0; background: var(--cream);">
+    <div class="container text-center">
+        <div class="section-badge">🛍️ اطلب الآن</div>
+        <h2 class="section-title mt-3">اطلب عطرك المفضل الآن<br>والدفع عند <span>الاستلام</span></h2>
+        <p style="color: var(--text-muted); font-size: 17px; margin: 20px 0 35px;">توصيل 48-72 ساعة | الدفع عند الاستلام | ضمان 14 يوم</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a asp-controller="Products" asp-action="Index" class="btn-hero-primary" style="display:inline-flex;">
+                <i class="fas fa-shopping-bag"></i>
+                تسوق الآن
+            </a>
+            <a href="https://wa.me/@(_cfg["Contact:WhatsApp"])" target="_blank" class="btn-hero-secondary" style="display:inline-flex; border-color: #25d366; color: #25d366;">
+                <i class="fab fa-whatsapp"></i>
+                واتساب
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/@(_cfg["Contact:WhatsApp"])" target="_blank" class="whatsapp-float" title="تواصل عبر واتساب">
+    <i class="fab fa-whatsapp"></i>
+</a>

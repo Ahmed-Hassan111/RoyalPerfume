@@ -1,0 +1,307 @@
+@{
+    ViewData["Title"] = "لوحة التحكم - أطياب رويال";
+    Layout = null;
+    var orders   = ViewBag.Orders   as List<RoyalPerfume.Models.Order>   ?? new();
+    var products = ViewBag.Products as List<RoyalPerfume.Models.Product> ?? new();
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<!-- Sidebar -->
+<aside class="admin-sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">👑</div>
+        <div>
+            <div class="sidebar-logo-title">أطياب رويال</div>
+            <div class="sidebar-logo-sub">لوحة التحكم</div>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/Admin" class="sidebar-link active"><i class="fas fa-tachometer-alt"></i> الرئيسية</a>
+        <a href="/Admin/Products" class="sidebar-link"><i class="fas fa-box"></i> المنتجات</a>
+        <a href="/Admin/Orders" class="sidebar-link"><i class="fas fa-shopping-bag"></i> الطلبات</a>
+        <a href="/Admin/Logout" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+    </nav>
+    <a href="/" class="sidebar-site-link" target="_blank"><i class="fas fa-external-link-alt"></i> زيارة الموقع</a>
+</aside>
+
+<!-- Main -->
+<main class="admin-main">
+    <div class="admin-header">
+        <h2 class="admin-page-title"><i class="fas fa-tachometer-alt"></i> لوحة التحكم</h2>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div class="admin-date">@DateTime.Now.ToString("dddd، d MMMM yyyy")</div>
+            <a href="/Admin/TestEmail" class="btn-small" style="background:#c8922a; color:white; text-decoration:none; padding:8px 16px; border-radius:8px; font-size:13px;">
+                <i class="fas fa-envelope"></i> اختبار الإيميل
+            </a>
+            <a href="/Admin/DiagOrders" target="_blank" class="btn-small" style="background:#2c5f2e; color:white; text-decoration:none; padding:8px 16px; border-radius:8px; font-size:13px;">
+                <i class="fas fa-database"></i> تشخيص الطلبات
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div style="background: @(TempData["Success"]!.ToString()!.StartsWith("❌") ? "#fee2e2" : "#dcfce7"); border: 1px solid @(TempData["Success"]!.ToString()!.StartsWith("❌") ? "#fca5a5" : "#86efac"); color: @(TempData["Success"]!.ToString()!.StartsWith("❌") ? "#991b1b" : "#166534"); border-radius: 10px; padding: 14px 20px; margin-bottom: 20px; font-size: 15px; font-weight: 600;">
+            @TempData["Success"]
+        </div>
+    }
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card stat-orders">
+            <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+            <div class="stat-content">
+                <div class="stat-number">@ViewBag.TotalOrders</div>
+                <div class="stat-label">إجمالي الطلبات</div>
+            </div>
+        </div>
+        <div class="stat-card stat-revenue">
+            <div class="stat-icon"><i class="fas fa-coins"></i></div>
+            <div class="stat-content">
+                <div class="stat-number">@((ViewBag.TotalRevenue as decimal? ?? 0).ToString("N0")) ج.م</div>
+                <div class="stat-label">إجمالي الإيرادات</div>
+            </div>
+        </div>
+        <div class="stat-card stat-products">
+            <div class="stat-icon"><i class="fas fa-box"></i></div>
+            <div class="stat-content">
+                <div class="stat-number">@ViewBag.ProductCount</div>
+                <div class="stat-label">عدد المنتجات</div>
+            </div>
+        </div>
+        <div class="stat-card stat-instapay">
+            <div class="stat-icon">📱</div>
+            <div class="stat-content">
+                <div class="stat-number">@ViewBag.InstapayOrders</div>
+                <div class="stat-label">طلبات إنستاباي</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALL Orders -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h3><i class="fas fa-shopping-bag"></i> جميع الطلبات <span style="background:rgba(200,146,42,0.2);border-radius:50px;padding:2px 12px;font-size:14px;margin-right:8px;">@orders.Count طلب</span></h3>
+            <a href="/Admin/Orders" class="btn-small">إدارة متقدمة</a>
+        </div>
+        <div class="table-wrapper">
+            @if (!orders.Any())
+            {
+                <div class="empty-state">
+                    <div style="font-size: 64px; margin-bottom: 16px;">📭</div>
+                    <h3 style="color:#fff;">لا توجد طلبات بعد</h3>
+                    <p style="color:#666;margin-top:8px;">ستظهر الطلبات هنا بمجرد أن يبدأ العملاء في الشراء</p>
+                </div>
+            }
+            else
+            {
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>التاريخ</th>
+                            <th>العميل</th>
+                            <th>الهاتف</th>
+                            <th>المحافظة</th>
+                            <th>الدفع</th>
+                            <th>الإجمالي</th>
+                            <th>الحالة</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in orders)
+                        {
+                            <tr>
+                                <td><span class="order-num">#@order.OrderNumber</span></td>
+                                <td style="font-size:12px;color:#888;">@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td><strong>@order.FullName</strong></td>
+                                <td dir="ltr">@order.Phone</td>
+                                <td>@order.Governorate@(!string.IsNullOrEmpty(order.District) ? " - " + order.District : "")</td>
+                                <td>
+                                    @if (order.PaymentMethod == "instapay")
+                                    { <span class="badge badge-instapay">📱 إنستاباي</span> }
+                                    else if (order.PaymentMethod == "cash")
+                                    { <span class="badge badge-cash">💵 كاش</span> }
+                                    else
+                                    { <span class="badge badge-card">💳 بطاقة</span> }
+                                </td>
+                                <td class="price-cell">@order.Total.ToString("N0") ج.م</td>
+                                <td>
+                                    @{
+                                        var statusOptions = new[] {
+                                            ("pending_review", "قيد المراجعة"),
+                                            ("confirmed",      "مؤكد"),
+                                            ("shipped",        "جاري الشحن"),
+                                            ("delivered",      "تم التوصيل")
+                                        };
+                                    }
+                                    <select class="status-select"
+                                            onchange="updateStatus('@order.OrderNumber', this.value)">
+                                        @foreach (var (val, lbl) in statusOptions)
+                                        {
+                                            if (val == order.Status)
+                                            {
+                                                <option value="@val" selected>@lbl</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@val">@lbl</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="btn-delete-order" onclick="confirmDeleteOrder('@order.OrderNumber', '@order.FullName')" title="حذف الطلب">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Order items row -->
+                            @if (order.Items != null && order.Items.Any())
+                            {
+                                <tr class="order-items-row">
+                                    <td colspan="9" style="background:rgba(255,255,255,0.02);padding:8px 16px;">
+                                        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                                            @foreach (var item in order.Items)
+                                            {
+                                                <div style="display:flex;align-items:center;gap:8px;background:rgba(200,146,42,0.08);border:1px solid rgba(200,146,42,0.2);border-radius:8px;padding:6px 12px;font-size:12px;">
+                                                    <img src="@item.ProductImage" style="width:28px;height:28px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'">
+                                                    <span style="color:#ddd;">@item.ProductName</span>
+                                                    <span style="color:#c8922a;font-weight:700;">×@item.Quantity</span>
+                                                    <span style="color:#888;">@item.Price.ToString("N0") ج.م</span>
+                                                    <span style="color:#555;font-size:11px;">@item.Volume</span>
+                                                </div>
+                                            }
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(order.Address))
+                                        {
+                                            <div style="margin-top:6px;color:#666;font-size:12px;">
+                                                <i class="fas fa-map-marker-alt" style="color:#c8922a;margin-left:4px;"></i>@order.Address
+                                            </div>
+                                        }
+                                        @if (!string.IsNullOrEmpty(order.Notes))
+                                        {
+                                            <div style="margin-top:4px;color:#888;font-size:12px;">📝 ملاحظة: @order.Notes</div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    <!-- Products Quick View -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h3><i class="fas fa-box"></i> المنتجات</h3>
+            <a href="/Admin/Products" class="btn-small">إدارة المنتجات</a>
+        </div>
+        <div class="products-grid-mini">
+            @foreach (var product in products.Take(6))
+            {
+                <div class="product-mini-card">
+                    <img src="@product.ImageUrl" alt="@product.NameAr" class="product-mini-img">
+                    <div class="product-mini-info">
+                        <div class="product-mini-name">@product.NameAr</div>
+                        <div class="product-mini-price">@product.Price.ToString("N0") ج.م</div>
+                        <div class="product-mini-stock">مخزون: @product.Stock</div>
+                    </div>
+                    <a href="/Admin/EditProduct/@product.Id" class="btn-edit-mini"><i class="fas fa-edit"></i></a>
+                </div>
+            }
+        </div>
+    </div>
+</main>
+
+<!-- Delete Confirm Modal -->
+<div id="deleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;align-items:center;justify-content:center;">
+    <div style="background:#1a1a2e;border:1px solid rgba(200,146,42,0.3);border-radius:16px;padding:32px 28px;max-width:420px;width:90%;text-align:center;font-family:Cairo,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+        <div style="font-size:52px;margin-bottom:12px;">🗑️</div>
+        <h3 style="color:#fff;font-size:20px;margin-bottom:8px;">حذف الطلب</h3>
+        <p id="deleteModalMsg" style="color:#aaa;font-size:14px;margin-bottom:24px;"></p>
+        <div style="display:flex;gap:12px;justify-content:center;">
+            <button id="deleteConfirmBtn" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-family:Cairo,sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">تأكيد الحذف</button>
+            <button onclick="closeDeleteModal()" style="background:rgba(255,255,255,0.08);color:#ccc;border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:11px 28px;font-family:Cairo,sans-serif;font-size:15px;cursor:pointer;transition:opacity .2s;" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let _pendingDeleteOrder = null;
+
+function confirmDeleteOrder(orderNumber, customerName) {
+    _pendingDeleteOrder = orderNumber;
+    document.getElementById('deleteModalMsg').textContent =
+        `هل أنت متأكد من حذف الطلب #${orderNumber} للعميل ${customerName}؟ لا يمكن التراجع عن هذا الإجراء.`;
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'flex';
+    document.getElementById('deleteConfirmBtn').onclick = executeDelete;
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    _pendingDeleteOrder = null;
+}
+
+function executeDelete() {
+    if (!_pendingDeleteOrder) return;
+    const orderNumber = _pendingDeleteOrder;
+    closeDeleteModal();
+    fetch('/Admin/DeleteOrder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `orderNumber=${encodeURIComponent(orderNumber)}`
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            showToast(d.message, '#dc2626');
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            showToast('❌ ' + d.message, '#dc2626');
+        }
+    });
+}
+
+// Close modal on backdrop click
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
+});
+
+function updateStatus(orderNumber, status) {
+    fetch('/Admin/UpdateOrderStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `orderNumber=${encodeURIComponent(orderNumber)}&status=${encodeURIComponent(status)}`
+    })
+    .then(r => r.json())
+    .then(d => { if (d.success) showToast('تم تحديث حالة الطلب ✅', '#16a34a'); });
+}
+
+function showToast(msg, color) {
+    color = color || '#16a34a';
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:${color};color:#fff;padding:12px 24px;border-radius:12px;font-family:Cairo,sans-serif;font-size:14px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3)`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+</script>
+</body>
+</html>

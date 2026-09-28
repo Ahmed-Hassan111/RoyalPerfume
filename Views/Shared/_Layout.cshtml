@@ -1,0 +1,221 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration _config
+@{
+    var _phone    = _config["Contact:Phone"]    ?? "01022624475";
+    var _whatsapp = _config["Contact:WhatsApp"] ?? "201022624475";
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - أطياب رويال</title>
+    <meta name="description" content="أطياب رويال - عطور فاخرة أصيلة بأسعار مناسبة. اكتشف تشكيلتنا من العطور العربية والغربية الراقية." />
+
+    <!-- ── Favicon ── -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon"            href="/favicon.ico" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="msapplication-TileColor" content="#0a0a0f" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="top-bar-offers">
+                    <i class="fas fa-tag me-1"></i>
+                    <span>🔥 عرض محدود: خصم 10% على جميع العطور الفرنسية | كود: <strong>ROYAL10</strong></span>
+                </div>
+                <div class="top-bar-links">
+                    <a href="https://wa.me/@_whatsapp" target="_blank"><i class="fab fa-whatsapp me-1"></i>تواصل معنا</a>
+                    <span class="mx-2">|</span>
+                    <a href="tel:@_phone"><i class="fas fa-headset me-1"></i>@_phone</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg main-navbar sticky-top">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                <span class="brand-arabic">أطياب</span>
+                <span class="brand-english">رويال</span>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <div class="d-flex align-items-center gap-3 d-lg-none">
+                <a asp-controller="Cart" asp-action="Index" class="cart-btn-mobile">
+                    <i class="fas fa-shopping-bag"></i>
+                    @if ((ViewBag.CartCount ?? 0) > 0)
+                    {
+                        <span class="cart-badge">@ViewBag.CartCount</span>
+                    }
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <!-- Nav Links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" 
+                           asp-controller="Home" asp-action="Index">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Products" asp-action="Index">كل العطور</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">التصنيفات</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Index" asp-route-category="عطور رجالية"><i class="fas fa-mars me-2"></i>عطور رجالية</a></li>
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Index" asp-route-category="عطور نسائية"><i class="fas fa-venus me-2"></i>عطور نسائية</a></li>
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Index" asp-route-category="عود وعربية"><i class="fas fa-fire me-2"></i>عود وعربية</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-offer" asp-controller="Products" asp-action="Index">
+                            🔥 العروض
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "ReturnPolicy" ? "active" : "")" asp-controller="Home" asp-action="ReturnPolicy">
+                            <i class="fas fa-shield-alt me-1" style="font-size:12px;"></i>سياسة الاسترجاع
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Cart & Actions -->
+                <div class="navbar-actions d-none d-lg-flex align-items-center gap-3">
+                    <a asp-controller="Cart" asp-action="Index" class="cart-btn" id="cartNavBtn">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>السلة</span>
+                        <span class="cart-count" id="cartCountBadge" style="@((ViewBag.CartCount ?? 0) == 0 ? "display:none" : "")">@(ViewBag.CartCount ?? 0)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main role="main">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert-toast alert-toast-success show" id="successToast">
+                <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+                <button class="btn-close-toast" onclick="this.parentElement.remove()">×</button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert-toast alert-toast-error show" id="errorToast">
+                <i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+                <button class="btn-close-toast" onclick="this.parentElement.remove()">×</button>
+            </div>
+        }
+        
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-brand">
+                            <h3>أطياب رويال</h3>
+                            <p>نبع فخامة العطر الأصيل - عطور فرنسية وعربية بأعلى جودة وأفضل أسعار</p>
+                            <div class="footer-social">
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-tiktok"></i></a>
+                                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <h5>روابط سريعة</h5>
+                        <ul class="footer-links">
+                            <li><a asp-controller="Home" asp-action="Index">الرئيسية</a></li>
+                            <li><a asp-controller="Products" asp-action="Index">المنتجات</a></li>
+                            <li><a asp-controller="Cart" asp-action="Index">السلة</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h5>خدمات العملاء</h5>
+                        <ul class="footer-links">
+                            <li><a asp-controller="Home" asp-action="ReturnPolicy">سياسة الاسترجاع</a></li>
+                            <li><a href="#">الشحن والتوصيل</a></li>
+                            <li><a href="#">ضمان الأصالة</a></li>
+                            <li><a href="#">الأسئلة الشائعة</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h5>تواصل بنا</h5>
+                        <ul class="footer-contact">
+                            <li><a href="tel:@_phone" style="color:inherit;text-decoration:none;"><i class="fas fa-phone-alt"></i> @_phone</a></li>
+                            <li><a href="https://wa.me/@_whatsapp" target="_blank" style="color:inherit;text-decoration:none;"><i class="fab fa-whatsapp"></i> @_phone</a></li>
+                            <li><i class="fas fa-envelope"></i> info@royalperfume.com</li>
+                            <li><i class="fas fa-clock"></i> 9 ص - 12 م يومياً</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <p class="mb-0">© @DateTime.Now.Year أطياب رويال - جميع الحقوق محفوظة</p>
+                    <div class="payment-icons">
+                        <i class="fab fa-cc-visa"></i>
+                        <i class="fab fa-cc-mastercard"></i>
+                        <i class="fas fa-mobile-alt"></i>
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Auto-hide toasts
+        setTimeout(() => {
+            document.querySelectorAll('.alert-toast').forEach(t => t.remove());
+        }, 5000);
+
+        // Update cart count dynamically
+        function updateCartCount(count) {
+            const badge = document.getElementById('cartCountBadge');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? '' : 'none';
+            }
+        }
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
