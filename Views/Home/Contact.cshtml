@@ -1,0 +1,275 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration _config
+@{
+    ViewData["Title"] = "اتصل بنا";
+    var phone    = _config["Contact:Phone"]    ?? "01022624475";
+    var whatsapp = _config["Contact:WhatsApp"] ?? "201022624475";
+    var email    = _config["Email:From"]       ?? "info@royalperfume.com";
+}
+
+@* ── Page Hero ── *@
+<div class="contact-hero">
+    <div class="container text-center">
+        <span class="section-badge">نحن هنا لمساعدتك</span>
+        <h1 class="contact-hero-title">اتصل بنا</h1>
+        <p class="contact-hero-sub">
+            نرد على كل رسالة خلال يوم عمل واحد. للاستفسارات العاجلة عن طلب قائم،<br>
+            يرجى تجهيز رقم الطلب.
+        </p>
+    </div>
+</div>
+
+@* ── Main Content ── *@
+<section class="contact-section">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+
+            @* ── Form ── *@
+            <div class="col-lg-7">
+                <div class="contact-form-card">
+                    <form asp-controller="Home" asp-action="Contact" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="contact-label">اسمك <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="contact-input" placeholder="أدخل اسمك الكريم" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="contact-label">البريد الإلكتروني <span class="text-danger">*</span></label>
+                                <input type="email" name="email" class="contact-input" placeholder="example@email.com" required />
+                            </div>
+                            <div class="col-12">
+                                <label class="contact-label">الرسالة <span class="text-danger">*</span></label>
+                                <textarea name="message" class="contact-input contact-textarea" rows="6"
+                                          placeholder="اكتب رسالتك هنا..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn-contact-send">
+                                    <i class="fas fa-paper-plane me-2"></i>إرسال الرسالة
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @* ── Info Cards ── *@
+            <div class="col-lg-4">
+                <div class="contact-info-col">
+
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-info-text">
+                            <span class="contact-info-label">البريد الإلكتروني</span>
+                            <a href="mailto:@email" class="contact-info-value">@email</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="contact-info-text">
+                            <span class="contact-info-label">الهاتف</span>
+                            <a href="tel:@phone" class="contact-info-value">@phone</a>
+                        </div>
+                    </div>
+
+                    <a href="https://wa.me/@whatsapp" target="_blank" class="btn-whatsapp-contact">
+                        <i class="fab fa-whatsapp me-2"></i>تحدث معنا على واتساب
+                    </a>
+
+                    <div class="contact-hours-card">
+                        <i class="fas fa-clock me-2" style="color:var(--gold)"></i>
+                        <div>
+                            <div class="contact-info-label">ساعات العمل</div>
+                            <div class="contact-info-value">9 ص – 12 م · يومياً</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@section Styles {
+<style>
+/* ── Contact Hero ── */
+.contact-hero {
+    background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown-medium) 60%, var(--brown-light) 100%);
+    padding: 70px 0 50px;
+    text-align: center;
+}
+.contact-hero-title {
+    font-size: clamp(32px,5vw,52px);
+    font-weight: 900;
+    color: #fff;
+    margin: 10px 0 14px;
+}
+.contact-hero-sub {
+    color: rgba(245,237,224,.75);
+    font-size: 16px;
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* ── Section ── */
+.contact-section {
+    padding: 60px 0 90px;
+    background: var(--bg-body, var(--cream-light));
+}
+
+/* ── Form Card ── */
+.contact-form-card {
+    background: var(--bg-card, #fff);
+    border-radius: var(--radius-md);
+    padding: 36px 32px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+.contact-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+.contact-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    color: var(--text-primary);
+    background: var(--bg-card, #fff);
+    outline: none;
+    transition: var(--transition);
+    direction: rtl;
+}
+.contact-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(200,146,42,.13);
+}
+.contact-input::placeholder { color: var(--text-muted); }
+.contact-textarea { resize: vertical; min-height: 150px; }
+
+.btn-contact-send {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #fff;
+    border: none;
+    padding: 15px;
+    border-radius: 50px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 8px 25px rgba(200,146,42,.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-contact-send:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(200,146,42,.5);
+}
+
+/* ── Info Col ── */
+.contact-info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.contact-info-card {
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: var(--transition);
+}
+.contact-info-card:hover {
+    border-color: var(--gold);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+}
+.contact-info-icon {
+    width: 46px;
+    height: 46px;
+    background: linear-gradient(135deg, rgba(200,146,42,.18), rgba(200,146,42,.06));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--gold);
+    flex-shrink: 0;
+}
+.contact-info-label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+.contact-info-value {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+.contact-info-value:hover { color: var(--gold); }
+
+.btn-whatsapp-contact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold-dark);
+    padding: 14px;
+    border-radius: 50px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: var(--transition);
+}
+.btn-whatsapp-contact:hover {
+    background: #25d366;
+    border-color: #25d366;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37,211,102,.4);
+}
+.btn-whatsapp-contact .fab { font-size: 20px; }
+
+.contact-hours-card {
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Light-mode compat */
+body.light-mode .contact-form-card,
+body.light-mode .contact-info-card,
+body.light-mode .contact-hours-card { background: #fff; }
+body.light-mode .contact-input { background: #fff; }
+</style>
+}
+

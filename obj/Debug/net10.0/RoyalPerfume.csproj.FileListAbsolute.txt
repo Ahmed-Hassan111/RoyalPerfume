@@ -22,8 +22,6 @@ E:\perfume\RoyalPerfume\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\scopedcss\bundle\RoyalPerfume.styles.css
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\scopedcss\projectbundle\RoyalPerfume.bundle.scp.css
-E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\vyqshwoggb-{0}-v0ib3uyykt-v0ib3uyykt.gz
-E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\1bi8gvf211-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\rds2irm4gj-{0}-bqjiyaj88i-bqjiyaj88i.gz
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\3zb3n2ztk4-{0}-c2jlpeoesf-c2jlpeoesf.gz
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\8od8trqf6o-{0}-erw9l3u2r3-erw9l3u2r3.gz
@@ -225,3 +223,5 @@ E:\perfume\RoyalPerfume\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\RoyalPer.324F29F3.Up2Date
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\92frz1ac4h-{0}-osfcca1peg-osfcca1peg.gz
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\RoyalPerfume.sourcelink.json
+E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\vyqshwoggb-{0}-nexic2jc4s-nexic2jc4s.gz
+E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\1bi8gvf211-{0}-8ed5xxthla-8ed5xxthla.gz

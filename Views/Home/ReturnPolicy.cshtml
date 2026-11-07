@@ -1,121 +1,112 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration _cfg
 @{
     ViewData["Title"] = "سياسة الاسترجاع والاستبدال - أطياب رويال";
 }
 
 <!-- Page Hero -->
-<div class="page-hero" style="padding: 70px 0 50px; background: linear-gradient(135deg, #0a0a0f 0%, #1a1205 50%, #0a0a0f 100%); position:relative; overflow:hidden;">
-    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%, rgba(200,146,42,0.12) 0%, transparent 70%);pointer-events:none;"></div>
-    <div class="container text-center" style="position:relative;z-index:1;">
-        <div style="display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;background:rgba(200,146,42,0.12);border:1px solid rgba(200,146,42,0.3);border-radius:50%;margin-bottom:20px;">
+<div class="rp-hero">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%, rgba(200,146,42,0.14) 0%, transparent 70%);pointer-events:none;"></div>
+    <div class="container text-center rp-hero-inner">
+        <div class="rp-hero-icon">
             <i class="fas fa-shield-alt" style="font-size:28px;color:#c8922a;"></i>
         </div>
-        <h1 style="font-family:'Tajawal',sans-serif;font-size:clamp(26px,5vw,40px);font-weight:800;color:#fff;margin-bottom:12px;">
-            سياسة الاسترجاع والاستبدال
-        </h1>
-        <p style="color:#a08040;font-size:16px;max-width:560px;margin:0 auto;line-height:1.8;">
+        <h1 class="rp-hero-title">سياسة الاسترجاع والاستبدال</h1>
+        <p class="rp-hero-sub">
             نلتزم بتقديم أعلى مستوى من الخدمة — تعرّف على حقوقك وشروط الاسترجاع بكل وضوح وشفافية
         </p>
     </div>
 </div>
 
 <!-- Main Content -->
-<section style="padding: 60px 0 80px; background:#0f0f14;">
+<section class="rp-section">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-9">
 
                 <!-- ⚠️ Important Notice -->
-                <div style="background:linear-gradient(135deg,rgba(220,38,38,0.08),rgba(220,38,38,0.03));border:1px solid rgba(220,38,38,0.3);border-radius:16px;padding:24px 28px;margin-bottom:36px;display:flex;gap:16px;align-items:flex-start;">
-                    <div style="flex-shrink:0;width:44px;height:44px;background:rgba(220,38,38,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                <div class="rp-card rp-card-danger">
+                    <div class="rp-card-icon rp-icon-danger">
                         <i class="fas fa-exclamation-triangle" style="color:#ef4444;font-size:18px;"></i>
                     </div>
                     <div>
-                        <h3 style="color:#ef4444;font-size:17px;font-weight:700;margin-bottom:8px;font-family:'Tajawal',sans-serif;">
-                            ⚠️ تنبيه هام — العطور المفتوحة لا تُسترجع
-                        </h3>
-                        <p style="color:#c0a0a0;font-size:14px;line-height:1.8;margin:0;">
+                        <h3 class="rp-card-title rp-title-danger">⚠️ تنبيه هام — العطور المفتوحة لا تُسترجع</h3>
+                        <p class="rp-card-text rp-text-danger">
                             نظراً لطبيعة منتجات العطور الفاخرة وحرصاً على صحة وسلامة جميع عملائنا،
-                            <strong style="color:#fca5a5;">لا يُقبل استرجاع أي عطر بعد فتح الختم الأصلي أو إزالة غلاف العبوة</strong>.
-                            هذا الشرط معمول به على مستوى جميع متاجر العطور المحترفة عالمياً وفقاً لمعايير السلامة الصحية والذوق العام.
+                            <strong class="rp-strong-danger">لا يُقبل استرجاع أي عطر بعد فتح الختم الأصلي أو إزالة غلاف العبوة</strong>.
+                            هذا الشرط معمول به على مستوى جميع متاجر العطور المحترمة عالمياً وفقاً لمعايير السلامة الصحية والذوق العام.
                         </p>
                     </div>
                 </div>
 
                 <!-- ✅ Accepted Returns -->
-                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,146,42,0.15);border-radius:16px;padding:32px;margin-bottom:20px;">
-                    <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
-                        <div style="width:48px;height:48px;background:rgba(34,197,94,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <div class="rp-card rp-card-normal">
+                    <div class="rp-card-header">
+                        <div class="rp-card-icon" style="background:rgba(34,197,94,0.1);">
                             <i class="fas fa-check-circle" style="color:#22c55e;font-size:20px;"></i>
                         </div>
-                        <h2 style="color:#c8922a;font-size:19px;font-weight:700;margin:0;font-family:'Tajawal',sans-serif;">
-                            الحالات التي يُقبل فيها الاسترجاع أو الاستبدال
-                        </h2>
+                        <h2 class="rp-section-title">الحالات التي يُقبل فيها الاسترجاع أو الاستبدال</h2>
                     </div>
-                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px;">
-                        <li style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fas fa-check" style="color:#22c55e;margin-top:5px;flex-shrink:0;"></i>
-                            <span style="color:#c8bfb0;line-height:1.75;"><strong style="color:#fff;">المنتج لم يُفتح إطلاقاً</strong> — الغلاف والختم الأصلي (Cellophane أو شريط الأمان) سليم تماماً دون أي تعديل.</span>
+                    <ul class="rp-list">
+                        <li class="rp-list-item">
+                            <i class="fas fa-check rp-check-icon"></i>
+                            <span class="rp-list-text"><strong class="rp-strong">المنتج لم يُفتح إطلاقاً</strong> — الغلاف والختم الأصلي (Cellophane أو شريط الأمان) سليم تماماً دون أي تعديل.</span>
                         </li>
-                        <li style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fas fa-check" style="color:#22c55e;margin-top:5px;flex-shrink:0;"></i>
-                            <span style="color:#c8bfb0;line-height:1.75;"><strong style="color:#fff;">المنتج وصل تالفاً أو معيباً</strong> — كسر في الزجاجة، تسرّب ظاهر، أو عطل في رأس الرش ناتج عن الشحن.</span>
+                        <li class="rp-list-item">
+                            <i class="fas fa-check rp-check-icon"></i>
+                            <span class="rp-list-text"><strong class="rp-strong">المنتج وصل تالفاً أو معيباً</strong> — كسر في الزجاجة، تسرّب ظاهر، أو عطل في رأس الرش ناتج عن الشحن.</span>
                         </li>
-                        <li style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fas fa-check" style="color:#22c55e;margin-top:5px;flex-shrink:0;"></i>
-                            <span style="color:#c8bfb0;line-height:1.75;"><strong style="color:#fff;">وصل منتج مختلف عن الطلب</strong> — تسلّمت صنفاً أو حجماً غير الذي اخترته.</span>
+                        <li class="rp-list-item">
+                            <i class="fas fa-check rp-check-icon"></i>
+                            <span class="rp-list-text"><strong class="rp-strong">وصل منتج مختلف عن الطلب</strong> — تسلّمت صنفاً أو حجماً غير الذي اخترته.</span>
                         </li>
-                        <li style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fas fa-check" style="color:#22c55e;margin-top:5px;flex-shrink:0;"></i>
-                            <span style="color:#c8bfb0;line-height:1.75;"><strong style="color:#fff;">خلال 14 يوماً</strong> من تاريخ الاستلام الفعلي، مع الاحتفاظ بالفاتورة وجميع محتويات الطرد الأصلية.</span>
+                        <li class="rp-list-item">
+                            <i class="fas fa-check rp-check-icon"></i>
+                            <span class="rp-list-text"><strong class="rp-strong">خلال 14 يوماً</strong> من تاريخ الاستلام الفعلي، مع الاحتفاظ بالفاتورة وجميع محتويات الطرد الأصلية.</span>
                         </li>
                     </ul>
                 </div>
 
                 <!-- ❌ Rejected Returns -->
-                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,146,42,0.15);border-radius:16px;padding:32px;margin-bottom:20px;">
-                    <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
-                        <div style="width:48px;height:48px;background:rgba(239,68,68,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <div class="rp-card rp-card-normal">
+                    <div class="rp-card-header">
+                        <div class="rp-card-icon" style="background:rgba(239,68,68,0.1);">
                             <i class="fas fa-times-circle" style="color:#ef4444;font-size:20px;"></i>
                         </div>
-                        <h2 style="color:#c8922a;font-size:19px;font-weight:700;margin:0;font-family:'Tajawal',sans-serif;">
-                            الحالات التي لا يُقبل فيها الاسترجاع
-                        </h2>
+                        <h2 class="rp-section-title">الحالات التي لا يُقبل فيها الاسترجاع</h2>
                     </div>
-                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px;">
-                        <li style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fas fa-times" style="color:#ef4444;margin-top:5px;flex-shrink:0;"></i>
-                            <span style="color:#c8bfb0;line-height:1.75;"><strong style="color:#fff;">العبوة مفتوحة أو الختم مكسور</strong> — بمجرد فتح العطر يُعتبر مستخدماً ولا يمكن إعادته لأسباب صحية.</span>
+                    <ul class="rp-list">
+                        <li class="rp-list-item">
+                            <i class="fas fa-times rp-times-icon"></i>
+                            <span class="rp-list-text"><strong class="rp-strong">العبوة مفتوحة أو الختم مكسور</strong> — بمجرد فتح العطر يُعتبر مستخدماً ولا يمكن إعادته لأسباب صحية.</span>
                         </li>
-                        <li style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fas fa-times" style="color:#ef4444;margin-top:5px;flex-shrink:0;"></i>
-                            <span style="color:#c8bfb0;line-height:1.75;"><strong style="color:#fff;">عدم الإعجاب بالرائحة بعد الفتح</strong> — لذلك ننصح بالتواصل معنا قبل الشراء للاستشارة الكاملة حول الرائحة.</span>
+                        <li class="rp-list-item">
+                            <i class="fas fa-times rp-times-icon"></i>
+                            <span class="rp-list-text"><strong class="rp-strong">عدم الإعجاب بالرائحة بعد الفتح</strong> — لذلك ننصح بالتواصل معنا قبل الشراء للاستشارة الكاملة حول الرائحة.</span>
                         </li>
-                        <li style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fas fa-times" style="color:#ef4444;margin-top:5px;flex-shrink:0;"></i>
-                            <span style="color:#c8bfb0;line-height:1.75;"><strong style="color:#fff;">مرور أكثر من 14 يوماً</strong> على تاريخ استلام الطلب.</span>
+                        <li class="rp-list-item">
+                            <i class="fas fa-times rp-times-icon"></i>
+                            <span class="rp-list-text"><strong class="rp-strong">مرور أكثر من 14 يوماً</strong> على تاريخ استلام الطلب.</span>
                         </li>
-                        <li style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fas fa-times" style="color:#ef4444;margin-top:5px;flex-shrink:0;"></i>
-                            <span style="color:#c8bfb0;line-height:1.75;"><strong style="color:#fff;">غياب الفاتورة أو ملحقات المنتج</strong> — يجب إعادة المنتج بكامل مشتملاته (علبة، غلاف، هدية إن وجدت).</span>
+                        <li class="rp-list-item">
+                            <i class="fas fa-times rp-times-icon"></i>
+                            <span class="rp-list-text"><strong class="rp-strong">غياب الفاتورة أو ملحقات المنتج</strong> — يجب إعادة المنتج بكامل مشتملاته (علبة، غلاف، هدية إن وجدت).</span>
                         </li>
-                        <li style="display:flex;gap:12px;align-items:flex-start;">
-                            <i class="fas fa-times" style="color:#ef4444;margin-top:5px;flex-shrink:0;"></i>
-                            <span style="color:#c8bfb0;line-height:1.75;"><strong style="color:#fff;">عطور التجربة (Miniature/Sample)</strong> — لا تُسترجع نظراً لطبيعتها.</span>
+                        <li class="rp-list-item">
+                            <i class="fas fa-times rp-times-icon"></i>
+                            <span class="rp-list-text"><strong class="rp-strong">عطور التجربة (Miniature/Sample)</strong> — لا تُسترجع نظراً لطبيعتها.</span>
                         </li>
                     </ul>
                 </div>
 
                 <!-- 📋 Return Steps -->
-                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,146,42,0.15);border-radius:16px;padding:32px;margin-bottom:20px;">
-                    <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
-                        <div style="width:48px;height:48px;background:rgba(200,146,42,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <div class="rp-card rp-card-normal">
+                    <div class="rp-card-header">
+                        <div class="rp-card-icon" style="background:rgba(200,146,42,0.1);">
                             <i class="fas fa-list-ol" style="color:#c8922a;font-size:20px;"></i>
                         </div>
-                        <h2 style="color:#c8922a;font-size:19px;font-weight:700;margin:0;font-family:'Tajawal',sans-serif;">
-                            خطوات طلب الاسترجاع أو الاستبدال
-                        </h2>
+                        <h2 class="rp-section-title">خطوات طلب الاسترجاع أو الاستبدال</h2>
                     </div>
-                    <div style="display:flex;flex-direction:column;gap:20px;">
+                    <div class="rp-steps">
                         @{
                             var steps = new[] {
                                 ("1","fas fa-comments","تواصل معنا فوراً","أرسل رسالة واتساب أو اتصل بنا خلال 14 يوماً من الاستلام، مع ذكر رقم الطلب واسمك."),
@@ -127,15 +118,13 @@
                         }
                         @foreach (var (num, icon, title, desc) in steps)
                         {
-                            <div style="display:flex;gap:16px;align-items:flex-start;">
-                                <div style="width:38px;height:38px;background:rgba(200,146,42,0.12);border:1px solid rgba(200,146,42,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;color:#c8922a;font-size:14px;font-family:'Tajawal',sans-serif;">
-                                    @num
-                                </div>
-                                <div style="flex:1;">
-                                    <div style="color:#fff;font-weight:700;margin-bottom:5px;font-family:'Tajawal',sans-serif;">
-                                        <i class="@icon" style="color:#c8922a;margin-left:7px;font-size:13px;"></i>@title
+                            <div class="rp-step">
+                                <div class="rp-step-num">@num</div>
+                                <div class="rp-step-body">
+                                    <div class="rp-step-title">
+                                        <i class="@icon rp-step-icon"></i>@title
                                     </div>
-                                    <div style="color:#8a807a;font-size:14px;line-height:1.75;">@desc</div>
+                                    <div class="rp-step-desc">@desc</div>
                                 </div>
                             </div>
                         }
@@ -143,39 +132,31 @@
                 </div>
 
                 <!-- 🏆 Authenticity Guarantee -->
-                <div style="background:linear-gradient(135deg,rgba(200,146,42,0.07),rgba(200,146,42,0.02));border:1px solid rgba(200,146,42,0.25);border-radius:16px;padding:32px;margin-bottom:40px;">
-                    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
-                        <div style="width:48px;height:48px;background:rgba(200,146,42,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <div class="rp-card rp-card-gold">
+                    <div class="rp-card-header">
+                        <div class="rp-card-icon" style="background:rgba(200,146,42,0.1);">
                             <i class="fas fa-award" style="color:#c8922a;font-size:20px;"></i>
                         </div>
-                        <h2 style="color:#c8922a;font-size:19px;font-weight:700;margin:0;font-family:'Tajawal',sans-serif;">
-                            ضمان الأصالة 100%
-                        </h2>
+                        <h2 class="rp-section-title">ضمان الأصالة 100%</h2>
                     </div>
-                    <p style="color:#c8bfb0;line-height:1.9;margin:0;font-size:15px;">
+                    <p class="rp-guarantee-text">
                         جميع عطورنا <strong style="color:#c8922a;">أصلية 100%</strong> ومستوردة مباشرة من الموردين المعتمدين.
                         في الحالة النادرة التي يثبت فيها عدم الأصالة بموجب تقرير معتمد، نضمن لك
-                        <strong style="color:#fff;">استرداداً كاملاً للمبلغ + تعويضاً</strong>.
+                        <strong class="rp-strong">استرداداً كاملاً للمبلغ + تعويضاً</strong>.
                         نحن نفخر بسمعتنا ولن نتنازل عن جودتنا أبداً.
                     </p>
                 </div>
 
                 <!-- CTA -->
-                <div style="text-align:center;">
-                    <p style="color:#7a706a;margin-bottom:22px;font-size:15px;">هل لديك استفسار أو تريد تقديم طلب استرجاع؟ تواصل معنا الآن</p>
-                    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-                        <a href="https://wa.me/@(_cfg["Contact:WhatsApp"])?text=مرحباً،%20أريد%20الاستفسار%20عن%20سياسة%20الاسترجاع"
-                           target="_blank"
-                           style="display:inline-flex;align-items:center;gap:9px;background:#25d366;color:#fff;padding:13px 30px;border-radius:50px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:15px;text-decoration:none;transition:opacity .2s;box-shadow:0 4px 20px rgba(37,211,102,0.25);"
-                           onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-                            <i class="fab fa-whatsapp" style="font-size:19px;"></i>
-                            واتساب
+                <div class="rp-cta">
+                    <p class="rp-cta-text">هل لديك استفسار أو تريد تقديم طلب استرجاع؟ تواصل معنا الآن</p>
+                    <div class="rp-cta-btns">
+                        <a href="https://wa.me/@(_cfg["Contact:WhatsApp"])&text=مرحباً،%20أريد%20الاستفسار%20عن%20سياسة%20الاسترجاع"
+                           target="_blank" class="rp-btn-whatsapp">
+                            <i class="fab fa-whatsapp" style="font-size:19px;"></i> واتساب
                         </a>
-                        <a href="tel:@(_cfg["Contact:Phone"])"
-                           style="display:inline-flex;align-items:center;gap:9px;background:rgba(200,146,42,0.1);color:#c8922a;border:1px solid rgba(200,146,42,0.35);padding:13px 30px;border-radius:50px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:15px;text-decoration:none;transition:opacity .2s;"
-                           onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">
-                            <i class="fas fa-phone-alt"></i>
-                            @(_cfg["Contact:Phone"])
+                        <a href="tel:@(_cfg["Contact:Phone"])" class="rp-btn-phone">
+                            <i class="fas fa-phone-alt"></i> @(_cfg["Contact:Phone"])
                         </a>
                     </div>
                 </div>
@@ -189,3 +170,175 @@
 <a href="https://wa.me/@(_cfg["Contact:WhatsApp"])" target="_blank" class="whatsapp-float">
     <i class="fab fa-whatsapp"></i>
 </a>
+
+@section Styles {
+<style>
+/* ── Hero ── */
+.rp-hero {
+    padding: 70px 0 50px;
+    background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown-medium) 50%, var(--brown-dark) 100%);
+    position: relative;
+    overflow: hidden;
+}
+.rp-hero-inner { position: relative; z-index: 1; }
+.rp-hero-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px; height: 72px;
+    background: rgba(200,146,42,0.12);
+    border: 1px solid rgba(200,146,42,0.3);
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+.rp-hero-title {
+    font-size: clamp(26px,5vw,40px);
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 12px;
+}
+.rp-hero-sub {
+    color: rgba(200,160,80,0.9);
+    font-size: 16px;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+body.light-mode .rp-hero-title { color: #fff; }
+body.light-mode .rp-hero-sub   { color: rgba(240,220,180,0.9); }
+
+/* ── Section ── */
+.rp-section {
+    padding: 60px 0 80px;
+    background: var(--bg-body, var(--cream-light));
+}
+
+/* ── Cards ── */
+.rp-card {
+    border-radius: 16px;
+    padding: 28px 30px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+/* Normal card */
+.rp-card-normal {
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+/* Danger card */
+.rp-card-danger {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: flex-start;
+    background: rgba(220,38,38,0.06);
+    border: 1px solid rgba(220,38,38,0.28);
+}
+body.light-mode .rp-card-danger {
+    background: rgba(220,38,38,0.05);
+    border-color: rgba(220,38,38,0.25);
+}
+/* Gold card */
+.rp-card-gold {
+    background: rgba(200,146,42,0.06);
+    border: 1px solid rgba(200,146,42,0.25);
+}
+body.light-mode .rp-card-gold {
+    background: rgba(200,146,42,0.07);
+    border-color: rgba(200,146,42,0.3);
+}
+
+/* ── Card icon ── */
+.rp-card-icon {
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    background: rgba(220,38,38,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* ── Card header ── */
+.rp-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+.rp-section-title {
+    color: var(--gold);
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* ── Danger text ── */
+.rp-card-title  { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.rp-title-danger { color: #ef4444; }
+.rp-card-text   { font-size: 14px; line-height: 1.8; margin: 0; }
+.rp-text-danger { color: var(--text-secondary); }
+.rp-strong-danger { color: #fca5a5; font-weight: 700; }
+body.light-mode .rp-text-danger   { color: var(--text-secondary); }
+body.light-mode .rp-strong-danger { color: #c53030; }
+
+/* ── List ── */
+.rp-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+.rp-list-item { display: flex; gap: 12px; align-items: flex-start; }
+.rp-check-icon { color: #22c55e; margin-top: 5px; flex-shrink: 0; }
+.rp-times-icon { color: #ef4444; margin-top: 5px; flex-shrink: 0; }
+.rp-list-text  { color: var(--text-secondary); line-height: 1.75; }
+.rp-strong     { color: var(--text-primary); font-weight: 700; }
+
+/* ── Steps ── */
+.rp-steps { display: flex; flex-direction: column; gap: 20px; }
+.rp-step  { display: flex; gap: 16px; align-items: flex-start; }
+.rp-step-num {
+    width: 38px; height: 38px;
+    background: rgba(200,146,42,0.12);
+    border: 1px solid rgba(200,146,42,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-weight: 800;
+    color: var(--gold);
+    font-size: 14px;
+}
+.rp-step-body  { flex: 1; }
+.rp-step-title { color: var(--text-primary); font-weight: 700; margin-bottom: 5px; }
+.rp-step-icon  { color: var(--gold); margin-left: 7px; font-size: 13px; }
+.rp-step-desc  { color: var(--text-muted); font-size: 14px; line-height: 1.75; }
+
+/* ── Guarantee ── */
+.rp-guarantee-text { color: var(--text-secondary); line-height: 1.9; margin: 0; font-size: 15px; }
+
+/* ── CTA ── */
+.rp-cta      { text-align: center; margin-top: 20px; }
+.rp-cta-text { color: var(--text-muted); margin-bottom: 22px; font-size: 15px; }
+.rp-cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.rp-btn-whatsapp {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: #25d366; color: #fff;
+    padding: 13px 30px; border-radius: 50px;
+    font-weight: 700; font-size: 15px;
+    text-decoration: none;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(37,211,102,0.25);
+}
+.rp-btn-whatsapp:hover { opacity: .85; color: #fff; }
+.rp-btn-phone {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: rgba(200,146,42,0.1);
+    color: var(--gold-dark);
+    border: 1px solid rgba(200,146,42,0.35);
+    padding: 13px 30px; border-radius: 50px;
+    font-weight: 700; font-size: 15px;
+    text-decoration: none;
+    transition: var(--transition);
+}
+.rp-btn-phone:hover { opacity: .75; color: var(--gold-dark); }
+body.light-mode .rp-btn-phone { background: rgba(200,146,42,0.08); }
+</style>
+}
