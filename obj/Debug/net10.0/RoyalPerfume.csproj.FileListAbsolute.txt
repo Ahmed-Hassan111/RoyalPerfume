@@ -224,3 +224,4 @@ E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\1klimoje28-{0}-fq3jyveq7s-f
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\RoyalPer.324F29F3.Up2Date
 E:\perfume\RoyalPerfume\obj\Debug\net10.0\compressed\92frz1ac4h-{0}-osfcca1peg-osfcca1peg.gz
+E:\perfume\RoyalPerfume\obj\Debug\net10.0\RoyalPerfume.sourcelink.json
