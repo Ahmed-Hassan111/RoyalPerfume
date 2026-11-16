@@ -1,138 +1,217 @@
 @model RoyalPerfume.Models.Product
+@inject Microsoft.Extensions.Configuration.IConfiguration _cfg
 @{
     ViewData["Title"] = $"{Model.NameAr} - أطياب رويال";
-    var related = ViewBag.RelatedProducts as List<RoyalPerfume.Models.Product> ?? new List<RoyalPerfume.Models.Product>();
+    var related = ViewBag.RelatedProducts as List<RoyalPerfume.Models.Product>
+                  ?? new List<RoyalPerfume.Models.Product>();
+    var phone    = _cfg["Contact:Phone"]    ?? "01022624475";
+    var whatsapp = _cfg["Contact:WhatsApp"] ?? "201022624475";
+
+    // Build full image list: main + additional
+    var allImages = new List<string> { Model.ImageUrl };
+    if (!string.IsNullOrEmpty(Model.AdditionalImages))
+    {
+        allImages.AddRange(Model.AdditionalImages.Split('|', System.StringSplitOptions.RemoveEmptyEntries));
+    }
 }
 
-<section style="padding: 50px 0 80px;">
+<div class="pd-wrapper">
     <div class="container">
-        <!-- Breadcrumb -->
-        <nav style="margin-bottom: 30px; font-size: 14px; color: var(--text-muted);">
-            <a asp-controller="Home" asp-action="Index" style="color: var(--gold); text-decoration: none;">الرئيسية</a>
-            <span class="mx-2">/</span>
-            <a asp-controller="Products" asp-action="Index" style="color: var(--gold); text-decoration: none;">العطور</a>
-            <span class="mx-2">/</span>
-            <span>@Model.NameAr</span>
+
+        <!-- ── Breadcrumb ── -->
+        <nav class="pd-breadcrumb">
+            <a asp-controller="Home"     asp-action="Index">الرئيسية</a>
+            <span>/</span>
+            <a asp-controller="Products" asp-action="Index">المنتجات</a>
+            <span>/</span>
+            <span class="pd-bc-current">@Model.NameAr</span>
         </nav>
 
-        <div class="row g-5 align-items-start">
-            <!-- Product Image -->
-            <div class="col-lg-5">
-                <div style="background: linear-gradient(135deg, #f9f1e8, #f5ede0); border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
-                    <img src="@Model.ImageUrl" alt="@Model.NameAr" style="width: 100%; aspect-ratio: 1; object-fit: cover;">
+        <!-- ── Main Grid ── -->
+        <div class="pd-grid">
+
+            <!-- ════ LEFT: Image Gallery ════ -->
+            <div class="pd-gallery">
+                <!-- Main image -->
+                <div class="pd-main-img-wrap">
+                    @if (Model.IsOnSale)
+                    {
+                        <span class="pd-discount-badge">@Model.DiscountPercent%−</span>
+                    }
+                    <img id="pdMainImg" src="@allImages[0]" alt="@Model.NameAr" class="pd-main-img">
                 </div>
-                @if (Model.IsOnSale)
+                <!-- Thumbnails - built from real images -->
+                @if (allImages.Count > 1)
                 {
-                    <div style="margin-top: 16px; background: linear-gradient(135deg, rgba(229,62,62,0.1), rgba(229,62,62,0.05)); border: 1px solid rgba(229,62,62,0.3); border-radius: 12px; padding: 14px 20px; text-align: center;">
-                        <span style="color: #e53e3e; font-weight: 700; font-size: 16px;">🔥 عرض محدود - وفر @Model.DiscountPercent%</span>
+                    <div class="pd-thumbs">
+                        @for (int i = 0; i < allImages.Count; i++)
+                        {
+                            <button class="pd-thumb @(i == 0 ? "active" : "")" onclick="switchImg(this,'@allImages[i]')">
+                                <img src="@allImages[i]" alt="صورة @(i + 1)">
+                            </button>
+                        }
                     </div>
                 }
             </div>
 
-            <!-- Product Details -->
-            <div class="col-lg-7">
-                <div style="background: white; border-radius: 20px; padding: 35px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
-                    <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
-                        <span style="background: rgba(200,146,42,0.1); color: var(--gold-dark); padding: 5px 14px; border-radius: 50px; font-size: 13px; font-weight: 600;">@Model.Category</span>
-                        <span style="background: rgba(200,146,42,0.1); color: var(--gold-dark); padding: 5px 14px; border-radius: 50px; font-size: 13px;">@Model.Concentration</span>
-                        <span style="background: rgba(200,146,42,0.1); color: var(--gold-dark); padding: 5px 14px; border-radius: 50px; font-size: 13px;">@Model.Volume</span>
-                    </div>
+            <!-- ════ RIGHT: Details ════ -->
+            <div class="pd-details">
 
-                    <h1 style="font-size: 30px; font-weight: 900; color: var(--brown-medium); margin-bottom: 16px;">@Model.NameAr</h1>
+                <!-- Name -->
+                <h1 class="pd-name">@Model.NameAr</h1>
+                @if (!string.IsNullOrWhiteSpace(Model.Name))
+                {
+                    <p class="pd-name-en">@Model.Name</p>
+                }
 
-                    <div class="product-rating" style="margin-bottom: 20px;">
-                        <span class="stars">
-                            @for (int i = 0; i < 5; i++) {
-                                <i class="@(i < (int)Model.Rating ? "fas" : "far") fa-star"></i>
-                            }
-                        </span>
-                        <span style="font-size: 16px; font-weight: 700; color: var(--brown-medium);">@Model.Rating</span>
-                        <span class="rating-text">(@Model.ReviewCount تقييم موثق)</span>
-                    </div>
+                <!-- Badges row -->
+                <div class="pd-badges">
+                    <span class="pd-badge">@Model.Category</span>
+                    <span class="pd-badge">@Model.Concentration</span>
+                    @if (Model.Stock > 0)
+                    {
+                        <span class="pd-badge pd-badge-green">متوفر</span>
+                    }
+                    else
+                    {
+                        <span class="pd-badge pd-badge-red">نفد</span>
+                    }
+                </div>
 
-                    <p style="color: var(--text-secondary); font-size: 16px; line-height: 1.8; margin-bottom: 24px;">@Model.DescriptionAr</p>
+                <!-- Rating -->
+                <div class="pd-rating-row">
+                    <span class="pd-stars">
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            <i class="@(i < (int)Model.Rating ? "fas" : "far") fa-star"></i>
+                        }
+                    </span>
+                    <span class="pd-rating-val">@Model.Rating</span>
+                    <span class="pd-rating-count">(@Model.ReviewCount تقييم)</span>
+                </div>
 
-                    <!-- Price -->
-                    <div style="background: var(--cream); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-                        <div style="display: flex; align-items: center; gap: 16px;">
-                            <span style="font-size: 36px; font-weight: 900; color: var(--gold-dark);">@Model.Price.ToString("N0") <small style="font-size: 18px;">ج.م</small></span>
-                            @if (Model.OldPrice > 0)
-                            {
-                                <span style="font-size: 18px; color: var(--text-muted); text-decoration: line-through;">@Model.OldPrice.ToString("N0") ج.م</span>
-                                <span style="background: #e53e3e; color: white; padding: 4px 12px; border-radius: 50px; font-size: 14px; font-weight: 700;">وفر @((Model.OldPrice - Model.Price).ToString("N0")) ج.م</span>
-                            }
+                <!-- Price -->
+                <div class="pd-price-block">
+                    <span class="pd-price-current">@Model.Price.ToString("N0") <small>ج.م</small></span>
+                    @if (Model.OldPrice > 0)
+                    {
+                        <span class="pd-price-old">@Model.OldPrice.ToString("N0") ج.م</span>
+                        <span class="pd-price-save">وفر @Model.DiscountPercent%</span>
+                    }
+                </div>
+
+                <!-- Volume chip -->
+                <div class="pd-volume-row">
+                    <span class="pd-volume-label">الحجم:</span>
+                    <span class="pd-volume-chip">@Model.Volume</span>
+                </div>
+
+                <!-- Quantity + Buttons -->
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="pd-actions-form">
+                    <input type="hidden" name="productId" value="@Model.Id">
+                    <div class="pd-qty-row">
+                        <div class="pd-qty-ctrl">
+                            <button type="button" class="pd-qty-btn" onclick="pdQty(-1)">−</button>
+                            <input  type="number" name="quantity" id="pdQty" class="pd-qty-input" value="1" min="1" max="@Model.Stock">
+                            <button type="button" class="pd-qty-btn" onclick="pdQty(1)">+</button>
                         </div>
-                        <p style="color: var(--text-muted); font-size: 13px; margin: 8px 0 0;">شامل الشحن والتوصيل السريع</p>
                     </div>
 
-                    <!-- Add to Cart -->
-                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                        <input type="hidden" name="productId" value="@Model.Id">
-                        <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: center;">
-                            <div class="quantity-control">
-                                <button type="button" class="qty-btn" onclick="changeQty(-1)">-</button>
-                                <input type="number" name="quantity" id="qty" class="qty-input" value="1" min="1" max="@Model.Stock">
-                                <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-add-cart" style="font-size: 18px; padding: 16px;">
-                            <i class="fas fa-shopping-bag"></i>
-                            أضف للسلة
+                    <div class="pd-btn-row">
+                        <a href="https://wa.me/@whatsapp?text=أريد%20طلب%20@Uri.EscapeDataString(Model.NameAr)"
+                           target="_blank" class="pd-btn-order">
+                            <i class="fas fa-shopping-bag"></i> اطلب الآن
+                        </a>
+                        <button type="submit" class="pd-btn-cart">
+                            <i class="fas fa-cart-plus"></i> أضف إلى السلة
                         </button>
-                    </form>
+                    </div>
+                </form>
 
-                    <!-- Guarantees -->
-                    <div style="margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(72,187,120,0.08); border-radius: 10px; border: 1px solid rgba(72,187,120,0.2);">
-                            <span style="color: #276749; font-size: 20px;">✅</span>
-                            <span style="font-size: 13px; color: #276749; font-weight: 600;">ضمان الأصالة 100%</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(200,146,42,0.08); border-radius: 10px; border: 1px solid rgba(200,146,42,0.2);">
-                            <span style="color: var(--gold-dark); font-size: 20px;">🔄</span>
-                            <span style="font-size: 13px; color: var(--gold-dark); font-weight: 600;">إرجاع 14 يوم</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(66,153,225,0.08); border-radius: 10px; border: 1px solid rgba(66,153,225,0.2);">
-                            <span style="color: #2b6cb0; font-size: 20px;">🚚</span>
-                            <span style="font-size: 13px; color: #2b6cb0; font-weight: 600;">توصيل سريع 48 ساعة</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(128,90,213,0.08); border-radius: 10px; border: 1px solid rgba(128,90,213,0.2);">
-                            <span style="color: #553c9a; font-size: 20px;">💵</span>
-                            <span style="font-size: 13px; color: #553c9a; font-weight: 600;">الدفع عند الاستلام</span>
-                        </div>
+                <!-- Free shipping strip -->
+                <div class="pd-shipping-strip">
+                    <i class="fas fa-truck"></i>
+                    <span>شحن مجاني لكل الطلبات التي تتجاوز <strong>1,000 ج.م</strong></span>
+                </div>
+
+                <!-- Share row -->
+                <div class="pd-share-row">
+                    <span class="pd-share-label">مشاركة:</span>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=@(Uri.EscapeDataString(Context.Request.Scheme+"://"+Context.Request.Host+Context.Request.Path))" target="_blank" class="pd-share-btn pd-share-fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/intent/tweet?url=@(Uri.EscapeDataString(Context.Request.Scheme+"://"+Context.Request.Host+Context.Request.Path))&text=@Uri.EscapeDataString(Model.NameAr)" target="_blank" class="pd-share-btn pd-share-tw" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://wa.me/?text=@Uri.EscapeDataString(Model.NameAr+" "+Context.Request.Scheme+"://"+Context.Request.Host+Context.Request.Path)" target="_blank" class="pd-share-btn pd-share-wa" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.instagram.com/" target="_blank" class="pd-share-btn pd-share-ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.snapchat.com/" target="_blank" class="pd-share-btn pd-share-sn" title="Snapchat"><i class="fab fa-snapchat-ghost"></i></a>
+                    <a href="https://www.tiktok.com/" target="_blank" class="pd-share-btn pd-share-tk" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+
+            </div>
+        </div><!-- /pd-grid -->
+
+        <!-- ── Tabs: Description / Details ── -->
+        <div class="pd-tabs-wrap">
+            <div class="pd-tab-nav">
+                <button class="pd-tab-btn active" onclick="switchTab(this,'desc')">الوصف</button>
+                <button class="pd-tab-btn" onclick="switchTab(this,'notes')">التفاصيل</button>
+            </div>
+
+            <div id="tab-desc" class="pd-tab-panel active">
+                <p class="pd-desc-text">@Model.DescriptionAr</p>
+            </div>
+
+            <div id="tab-notes" class="pd-tab-panel">
+                <h4 class="pd-notes-title">الهرم العطري</h4>
+                <ul class="pd-notes-list">
+                    <li><strong>المقدمة:</strong> رائحة انطباع أولي ساحر</li>
+                    <li><strong>القلب:</strong> جوهر العطر وروحه الأصيلة</li>
+                    <li><strong>القاعدة:</strong> أثر دائم يرسخ الذاكرة</li>
+                </ul>
+                <div class="pd-extra-info">
+                    <div class="pd-info-item">
+                        <span class="pd-info-label">التركيز</span>
+                        <span class="pd-info-val">@Model.Concentration</span>
+                    </div>
+                    <div class="pd-info-item">
+                        <span class="pd-info-label">الحجم</span>
+                        <span class="pd-info-val">@Model.Volume</span>
+                    </div>
+                    <div class="pd-info-item">
+                        <span class="pd-info-label">التصنيف</span>
+                        <span class="pd-info-val">@Model.Category</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Related Products -->
+        <!-- ── Related Products ── -->
         @if (related.Any())
         {
-            <div style="margin-top: 70px;">
-                <div class="section-header">
-                    <h2 class="section-title">منتجات <span>مشابهة</span></h2>
-                    <div class="section-divider"></div>
-                </div>
-                <div class="row g-4">
+            <div class="pd-related">
+                <h2 class="pd-related-title">قد يعجبك أيضاً</h2>
+                <div class="row g-3">
                     @foreach (var rp in related)
                     {
                         <div class="col-lg-3 col-md-6">
-                            <div class="product-card">
+                            <div class="product-card" style="position:relative;cursor:pointer;">
+                                <a href="/Products/Details/@rp.Id" class="product-card-link" aria-label="@rp.NameAr"></a>
                                 <div class="product-image-wrap">
                                     <img src="@rp.ImageUrl" alt="@rp.NameAr" loading="lazy">
                                     @if (rp.IsOnSale && rp.OldPrice > 0)
                                     {
-                                        <span class="product-badge">خصم @rp.DiscountPercent%</span>
+                                        <span class="product-badge">@rp.DiscountPercent%</span>
                                     }
                                 </div>
-                                <div class="product-info">
+                                <div class="product-info" style="position:relative;z-index:2;">
                                     <div class="product-category">@rp.Category</div>
-                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@rp.Id" class="text-decoration-none">
-                                        <h3 class="product-name">@rp.NameAr</h3>
-                                    </a>
+                                    <h3 class="product-name">@rp.NameAr</h3>
                                     <div class="product-price-wrap">
                                         <span class="price-current">@rp.Price.ToString("N0") ج.م</span>
+                                        @if (rp.OldPrice > 0)
+                                        {
+                                            <span class="price-old">@rp.OldPrice.ToString("N0") ج.م</span>
+                                        }
                                     </div>
-                                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post" style="position:relative;z-index:2;">
                                         <input type="hidden" name="productId" value="@rp.Id">
                                         <button type="submit" class="btn-add-cart">
                                             <i class="fas fa-shopping-bag"></i> أضف للسلة
@@ -145,19 +224,396 @@
                 </div>
             </div>
         }
-    </div>
-</section>
 
-<a href="https://wa.me/@(_cfg["Contact:WhatsApp"])" target="_blank" class="whatsapp-float">
+    </div><!-- /container -->
+</div><!-- /pd-wrapper -->
+
+<a href="https://wa.me/@whatsapp" target="_blank" class="whatsapp-float">
     <i class="fab fa-whatsapp"></i>
 </a>
 
+@section Styles {
+<style>
+/* ═══════════════════════════════════
+   PRODUCT DETAILS PAGE
+═══════════════════════════════════ */
+.pd-wrapper {
+    padding: 40px 0 90px;
+    background: var(--bg-body, var(--cream-light));
+}
+
+/* ── Breadcrumb ── */
+.pd-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+.pd-breadcrumb a { color: var(--gold-dark); text-decoration: none; transition: color .2s; }
+.pd-breadcrumb a:hover { color: var(--gold); }
+.pd-bc-current { color: var(--text-secondary); font-weight: 600; }
+
+/* ── Main Grid ── */
+.pd-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 48px;
+    align-items: start;
+    margin-bottom: 60px;
+}
+@@media (max-width: 900px) {
+    .pd-grid { grid-template-columns: 1fr; gap: 28px; }
+}
+
+/* ── Gallery ── */
+.pd-gallery { display: flex; flex-direction: column; gap: 14px; }
+
+.pd-main-img-wrap {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f9f1e8, #f0e6d0);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    aspect-ratio: 1;
+}
+.pd-main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease;
+}
+.pd-main-img-wrap:hover .pd-main-img { transform: scale(1.04); }
+
+.pd-discount-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: linear-gradient(135deg, #e53e3e, #c53030);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 50px;
+    z-index: 2;
+}
+
+.pd-thumbs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.pd-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all .2s;
+    flex-shrink: 0;
+}
+.pd-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.pd-thumb:hover, .pd-thumb.active {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(200,146,42,.3);
+}
+
+/* ── Details panel ── */
+.pd-name {
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    line-height: 1.25;
+}
+.pd-name-en {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    font-style: italic;
+}
+
+.pd-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.pd-badge {
+    background: rgba(200,146,42,.10);
+    color: var(--gold-dark);
+    padding: 4px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid rgba(200,146,42,.2);
+}
+.pd-badge-green { background: rgba(72,187,120,.10); color: #276749; border-color: rgba(72,187,120,.25); }
+.pd-badge-red   { background: rgba(229,62,62,.10);  color: #9b2c2c; border-color: rgba(229,62,62,.25); }
+
+.pd-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+.pd-stars { color: #f59e0b; font-size: 14px; }
+.pd-rating-val   { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+.pd-rating-count { font-size: 13px; color: var(--text-muted); }
+
+/* Price */
+.pd-price-block {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+.pd-price-current {
+    font-size: clamp(28px,4vw,40px);
+    font-weight: 900;
+    color: var(--gold-dark);
+}
+.pd-price-current small { font-size: 16px; }
+.pd-price-old {
+    font-size: 18px;
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+.pd-price-save {
+    background: linear-gradient(135deg,#e53e3e,#c53030);
+    color: #fff;
+    padding: 3px 12px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Volume */
+.pd-volume-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.pd-volume-label { font-size: 14px; color: var(--text-muted); font-weight: 600; }
+.pd-volume-chip {
+    background: rgba(200,146,42,.12);
+    color: var(--gold-dark);
+    border: 1px solid rgba(200,146,42,.3);
+    padding: 5px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Qty */
+.pd-qty-row { margin-bottom: 16px; }
+.pd-qty-ctrl {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-card, #fff);
+}
+.pd-qty-btn {
+    width: 40px; height: 40px;
+    background: var(--cream);
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: background .2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.pd-qty-btn:hover { background: var(--gold); color: #fff; }
+.pd-qty-input {
+    width: 56px; height: 40px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    font-size: 16px; font-weight: 700;
+    color: var(--text-primary);
+    background: transparent;
+    font-family: 'Tajawal', sans-serif;
+}
+.pd-qty-input::-webkit-inner-spin-button,
+.pd-qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+/* Buttons */
+.pd-btn-row { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.pd-btn-order {
+    flex: 1;
+    min-width: 140px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #fff;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 50px;
+    font-size: 16px; font-weight: 800;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .3s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 6px 20px rgba(200,146,42,.35);
+    font-family: 'Tajawal', sans-serif;
+}
+.pd-btn-order:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,146,42,.5); color: #fff; }
+
+.pd-btn-cart {
+    flex: 1;
+    min-width: 140px;
+    background: var(--bg-card, #fff);
+    color: var(--text-primary);
+    border: 1.5px solid var(--border-color);
+    padding: 14px 20px;
+    border-radius: 50px;
+    font-size: 16px; font-weight: 700;
+    cursor: pointer;
+    transition: all .3s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: 'Tajawal', sans-serif;
+}
+.pd-btn-cart:hover { border-color: var(--gold); color: var(--gold-dark); background: rgba(200,146,42,.06); }
+
+/* Shipping strip */
+.pd-shipping-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(200,146,42,.07);
+    border: 1px solid rgba(200,146,42,.2);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+}
+.pd-shipping-strip i { color: var(--gold); font-size: 18px; }
+.pd-shipping-strip strong { color: var(--gold-dark); }
+
+/* Share */
+.pd-share-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.pd-share-label { font-size: 14px; font-weight: 700; color: var(--text-muted); }
+.pd-share-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    transition: transform .2s, box-shadow .2s;
+}
+.pd-share-btn:hover { transform: translateY(-2px) scale(1.1); color: #fff; }
+.pd-share-fb { background: #1877f2; }
+.pd-share-tw { background: #000; }
+.pd-share-wa { background: #25d366; }
+.pd-share-ig { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+.pd-share-sn { background: #fffc00; color: #000 !important; }
+.pd-share-tk { background: #000; }
+
+/* ── Tabs ── */
+.pd-tabs-wrap {
+    background: var(--bg-card, #fff);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 60px;
+}
+.pd-tab-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--cream);
+}
+.pd-tab-btn {
+    padding: 16px 32px;
+    background: none;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    font-family: 'Tajawal', sans-serif;
+    transition: color .2s;
+}
+.pd-tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: 20%; left: 20%;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform .25s ease;
+}
+.pd-tab-btn.active { color: var(--gold-dark); }
+.pd-tab-btn.active::after { transform: scaleX(1); }
+
+.pd-tab-panel { display: none; padding: 32px; }
+.pd-tab-panel.active { display: block; }
+
+.pd-desc-text {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--text-secondary);
+}
+
+.pd-notes-title { font-size: 18px; font-weight: 800; color: var(--text-primary); margin-bottom: 16px; }
+.pd-notes-list { list-style: disc; padding-right: 24px; display: flex; flex-direction: column; gap: 10px; }
+.pd-notes-list li { color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+.pd-notes-list strong { color: var(--text-primary); }
+
+.pd-extra-info {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+.pd-info-item { display: flex; flex-direction: column; gap: 4px; }
+.pd-info-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.pd-info-val   { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+
+/* ── Related ── */
+.pd-related { margin-bottom: 20px; }
+.pd-related-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    text-align: right;
+}
+</style>
+}
+
 @section Scripts {
 <script>
-function changeQty(delta) {
-    const inp = document.getElementById('qty');
-    const newVal = Math.max(1, Math.min(parseInt(inp.max), (parseInt(inp.value) || 1) + delta));
-    inp.value = newVal;
+/* thumb switcher */
+function switchImg(thumb, url) {
+    document.getElementById('pdMainImg').src = url;
+    document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+}
+
+/* qty stepper */
+function pdQty(delta) {
+    var inp = document.getElementById('pdQty');
+    var v = Math.max(1, Math.min(parseInt(inp.max) || 999, (parseInt(inp.value) || 1) + delta));
+    inp.value = v;
+}
+
+/* tabs */
+function switchTab(btn, id) {
+    document.querySelectorAll('.pd-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.pd-tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
 }
 </script>
 }

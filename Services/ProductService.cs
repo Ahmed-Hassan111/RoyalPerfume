@@ -60,6 +60,7 @@ namespace RoyalPerfume.Services
             existing.Stock         = updated.Stock;
             existing.Rating        = updated.Rating;
             existing.ReviewCount   = updated.ReviewCount;
+            existing.AdditionalImages = updated.AdditionalImages ?? string.Empty;
 
             _db.SaveChanges();
             return true;

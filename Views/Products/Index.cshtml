@@ -39,6 +39,8 @@
                 {
                     <div class="col-lg-4 col-md-6">
                         <div class="product-card">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id"
+                               class="product-card-link" aria-label="@product.NameAr"></a>
                             <div class="product-image-wrap">
                                 <img src="@product.ImageUrl" alt="@product.NameAr" loading="lazy">
                                 @if (product.IsOnSale && product.OldPrice > 0)

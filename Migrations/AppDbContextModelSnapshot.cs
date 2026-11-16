@@ -163,6 +163,11 @@ namespace RoyalPerfume.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AdditionalImages")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
                     b.Property<string>("AlternatePhone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

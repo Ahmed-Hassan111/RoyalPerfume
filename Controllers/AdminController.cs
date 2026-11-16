@@ -84,7 +84,7 @@ namespace RoyalPerfume.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProduct(Product model, IFormFile? NewImage)
+        public async Task<IActionResult> EditProduct(Product model, IFormFile? NewImage, List<IFormFile>? AdditionalImagesFiles)
         {
             if (!IsLoggedIn()) return RedirectToAction("Login");
 
@@ -94,7 +94,7 @@ namespace RoyalPerfume.Controllers
             model.Volume        = model.Volume        ?? string.Empty;
             model.Concentration = model.Concentration ?? string.Empty;
 
-            // Handle new image upload
+            // Handle new main image upload
             if (NewImage != null && NewImage.Length > 0)
             {
                 var uploadsDir = Path.Combine(_env.WebRootPath, "images");
@@ -107,6 +107,30 @@ namespace RoyalPerfume.Controllers
                     await NewImage.CopyToAsync(stream);
                 }
                 model.ImageUrl = $"/images/{fileName}";
+            }
+
+            // Handle additional images upload
+            if (AdditionalImagesFiles != null && AdditionalImagesFiles.Count > 0)
+            {
+                var uploadsDir = Path.Combine(_env.WebRootPath, "images");
+                Directory.CreateDirectory(uploadsDir);
+                var addUrls = new List<string>();
+                // Keep existing additional images if user didn't clear them
+                if (!string.IsNullOrEmpty(model.AdditionalImages))
+                    addUrls.AddRange(model.AdditionalImages.Split('|', StringSplitOptions.RemoveEmptyEntries));
+                foreach (var file in AdditionalImagesFiles)
+                {
+                    if (file.Length > 0)
+                    {
+                        var ext2 = Path.GetExtension(file.FileName);
+                        var fn = $"product_{model.Id}_extra_{DateTime.Now:yyyyMMddHHmmss}_{addUrls.Count}{ext2}";
+                        var fp = Path.Combine(uploadsDir, fn);
+                        using (var stream = new FileStream(fp, FileMode.Create))
+                            await file.CopyToAsync(stream);
+                        addUrls.Add($"/images/{fn}");
+                    }
+                }
+                model.AdditionalImages = string.Join("|", addUrls);
             }
 
             _productService.UpdateProduct(model);
@@ -123,7 +147,7 @@ namespace RoyalPerfume.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProduct(Product model, IFormFile? NewImage)
+        public async Task<IActionResult> AddProduct(Product model, IFormFile? NewImage, List<IFormFile>? AdditionalImagesFiles)
         {
             if (!IsLoggedIn()) return RedirectToAction("Login");
 
@@ -149,6 +173,28 @@ namespace RoyalPerfume.Controllers
             else
             {
                 model.ImageUrl = "/images/product1.jpg"; // default
+            }
+
+            // Handle additional images upload
+            model.AdditionalImages = string.Empty;
+            if (AdditionalImagesFiles != null && AdditionalImagesFiles.Count > 0)
+            {
+                var uploadsDir = Path.Combine(_env.WebRootPath, "images");
+                Directory.CreateDirectory(uploadsDir);
+                var addUrls = new List<string>();
+                foreach (var file in AdditionalImagesFiles)
+                {
+                    if (file.Length > 0)
+                    {
+                        var ext2 = Path.GetExtension(file.FileName);
+                        var fn = $"product_new_extra_{DateTime.Now:yyyyMMddHHmmss}_{addUrls.Count}{ext2}";
+                        var fp = Path.Combine(uploadsDir, fn);
+                        using (var stream = new FileStream(fp, FileMode.Create))
+                            await file.CopyToAsync(stream);
+                        addUrls.Add($"/images/{fn}");
+                    }
+                }
+                model.AdditionalImages = string.Join("|", addUrls);
             }
 
             _productService.AddProduct(model);

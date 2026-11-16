@@ -19,6 +19,7 @@ namespace RoyalPerfume.Models
         public double Rating { get; set; }
         public int ReviewCount { get; set; }
         public string AlternatePhone { get; set; } = string.Empty;
+        public string AdditionalImages { get; set; } = string.Empty; // pipe-separated URLs e.g. /images/a.jpg|/images/b.jpg
 
         public int DiscountPercent => OldPrice > 0 
             ? (int)Math.Round((1 - Price / OldPrice) * 100) 

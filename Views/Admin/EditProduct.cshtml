@@ -54,6 +54,7 @@
                 <input type="hidden" name="ImageUrl" value="@Model.ImageUrl">
                 <input type="hidden" name="Rating" value="@Model.Rating">
                 <input type="hidden" name="ReviewCount" value="@Model.ReviewCount">
+                <input type="hidden" name="AdditionalImages" id="hiddenAdditionalImages" value="@Model.AdditionalImages">
             }
 
             <!-- Current Image Preview -->
@@ -181,6 +182,41 @@
                 </label>
             </div>
 
+            <!-- Additional Images -->
+            <div class="form-row" style="margin-top:24px;">
+                <div class="form-field full-width">
+                    <label class="field-label">🖼️ صور إضافية للمنتج (يمكنك اختيار أكثر من صورة)</label>
+                    
+                    @if (!isNew && !string.IsNullOrEmpty(Model.AdditionalImages))
+                    {
+                        <div style="margin-bottom:16px;">
+                            <div style="color:#ccc;font-size:13px;margin-bottom:10px;">الصور الإضافية الحالية:</div>
+                            <div id="currentExtraImgs" style="display:flex;flex-wrap:wrap;gap:10px;">
+                                @foreach (var imgUrl in Model.AdditionalImages.Split('|', System.StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    <div class="extra-img-wrap" data-url="@imgUrl" style="position:relative;">
+                                        <img src="@imgUrl" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid rgba(200,146,42,0.4);">
+                                        <button type="button" onclick="removeExtraImg(this,'@imgUrl')"
+                                            style="position:absolute;top:-8px;right:-8px;background:#e53935;color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;line-height:1;">✕</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="img-upload-area" onclick="document.getElementById('AdditionalImagesFiles').click()" style="border-style:dashed;">
+                        <div id="extraImgsPlaceholder">
+                            <i class="fas fa-images" style="font-size:28px;color:#c8922a;margin-bottom:8px;display:block;"></i>
+                            <div style="color:#c8922a;font-weight:600;">اضغط لإضافة صور إضافية</div>
+                            <div style="color:#666;font-size:12px;margin-top:4px;">يمكنك اختيار أكثر من صورة (JPG, PNG, WebP)</div>
+                        </div>
+                    </div>
+                    <input type="file" id="AdditionalImagesFiles" name="AdditionalImagesFiles" 
+                           accept="image/*" multiple style="display:none;" onchange="previewExtraImages(this)">
+                    <div id="extraImgPreviews" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;"></div>
+                </div>
+            </div>
+
             <div style="margin-top:32px;display:flex;gap:12px;">
                 <button type="submit" class="btn-primary-admin">
                     <i class="fas @(isNew ? "fa-plus" : "fa-save")"></i>
@@ -206,6 +242,38 @@ function previewImage(input) {
         };
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function previewExtraImages(input) {
+    const container = document.getElementById('extraImgPreviews');
+    container.innerHTML = '';
+    if (input.files && input.files.length > 0) {
+        document.getElementById('extraImgsPlaceholder').innerHTML = 
+            `<i class="fas fa-check-circle" style="font-size:28px;color:#4caf50;margin-bottom:8px;display:block;"></i>
+             <div style="color:#4caf50;font-weight:600;">تم اختيار ${input.files.length} صورة</div>`;
+        Array.from(input.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const div = document.createElement('div');
+                div.style.cssText = 'position:relative;';
+                div.innerHTML = `<img src="${e.target.result}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid rgba(200,146,42,0.5);">
+                    <span style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,0.6);color:#fff;font-size:9px;border-radius:4px;padding:1px 4px;">جديدة</span>`;
+                container.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+}
+
+function removeExtraImg(btn, url) {
+    // Remove from hidden field
+    const hidden = document.getElementById('hiddenAdditionalImages');
+    if (hidden) {
+        let urls = hidden.value.split('|').filter(u => u && u !== url);
+        hidden.value = urls.join('|');
+    }
+    // Remove visual element
+    btn.parentElement.remove();
 }
 </script>
 </body>

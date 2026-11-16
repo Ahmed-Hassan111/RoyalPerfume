@@ -35,48 +35,53 @@
 
 /* ======= LIGHT MODE ======= */
 body.light-mode {
-    --bg-body: #f0f4f8;
-    --bg-card: #ffffff;
-    --bg-section-alt: #e8ecf0;
-    --text-primary: #1a1a2e;
-    --text-secondary: #4a4a6a;
-    --text-muted: #6a6a8a;
-    --border-color: #c8d0dc;
-    --brown-dark: #2b2d42;
-    --brown-medium: #3d405b;
-    --brown-light: #6b6e8e;
-    --cream: #e8ecf0;
-    --cream-light: #f0f4f8;
-    --shadow-sm: 0 2px 15px rgba(0,0,0,0.08);
-    --shadow-md: 0 8px 30px rgba(0,0,0,0.14);
-    --shadow-lg: 0 20px 60px rgba(0,0,0,0.20);
+    /* ── Warm beige palette ── */
+    --bg-body:        #f5ede0;
+    --bg-card:        #ffffff;
+    --bg-section-alt: #ede4d3;
+    --text-primary:   #1e140a;
+    --text-secondary: #4a2e14;
+    --text-muted:     #8a6a4a;
+    --border-color:   #d9c9b0;
+    --brown-dark:     #1e140a;
+    --brown-medium:   #3a2210;
+    --brown-light:    #6b4423;
+    --cream:          #ede4d3;
+    --cream-light:    #f5ede0;
+    --shadow-sm:      0 2px 15px rgba(100,60,20,0.08);
+    --shadow-md:      0 8px 30px rgba(100,60,20,0.13);
+    --shadow-lg:      0 20px 60px rgba(100,60,20,0.18);
+    /* ── Gold → off-white in light mode ── */
+    --gold:           #f0e6cc;
+    --gold-light:     #fdf6e8;
+    --gold-dark:      #c8a060;
 }
 body.light-mode .main-navbar {
-    background: rgba(240, 244, 248, 0.97) !important;
-    border-bottom: 1px solid rgba(200, 146, 42, 0.4);
-    box-shadow: 0 4px 30px rgba(0,0,0,0.12);
+    background: rgba(245,237,224,0.97) !important;
+    border-bottom: 1px solid rgba(200,146,42,0.35);
+    box-shadow: 0 4px 20px rgba(100,60,20,0.10);
 }
 body.light-mode .nav-link {
-    color: rgba(26, 26, 46, 0.85) !important;
+    color: rgba(30,20,10,0.80) !important;
 }
 body.light-mode .nav-link:hover,
 body.light-mode .nav-link.active {
     color: var(--gold-dark) !important;
-    background: rgba(200, 146, 42, 0.12);
+    background: rgba(200,146,42,0.10);
 }
 body.light-mode .dropdown-menu {
-    background: #ffffff;
-    border: 1px solid rgba(200, 146, 42, 0.3);
+    background: #fff8ef;
+    border: 1px solid rgba(200,146,42,0.25);
 }
 body.light-mode .dropdown-item {
-    color: var(--brown-medium) !important;
+    color: #3a2210 !important;
 }
 body.light-mode .dropdown-item:hover {
-    background: rgba(200, 146, 42, 0.12) !important;
+    background: rgba(200,146,42,0.10) !important;
     color: var(--gold-dark) !important;
 }
 body.light-mode .top-bar {
-    background: linear-gradient(135deg, #2b2d42, #3d405b);
+    background: linear-gradient(135deg, #2c1810, #4a2e14);
 }
 body.light-mode body {
     background-color: var(--bg-body);
@@ -84,28 +89,53 @@ body.light-mode body {
 }
 body.light-mode .product-card {
     background: #ffffff;
+    border-color: #d9c9b0;
 }
+body.light-mode .product-name  { color: #1e140a; }
+body.light-mode .product-volume { color: #8a6a4a; }
 body.light-mode .features-section {
     background: var(--bg-section-alt);
 }
+body.light-mode .feature-card {
+    background: #fff8ef;
+    border-color: #d9c9b0;
+}
+body.light-mode .feature-card h5 { color: #1e140a; }
+body.light-mode .feature-card p  { color: #6b4423; }
 body.light-mode .cart-card,
 body.light-mode .order-summary-card,
 body.light-mode .checkout-card,
 body.light-mode .filter-bar {
     background: #ffffff;
 }
-body.light-mode .qty-input {
-    background: #fff;
-}
+body.light-mode .qty-input    { background: #fff8ef; color: #1e140a; }
+body.light-mode .coupon-input { background: #fff8ef; color: #1e140a; }
 body.light-mode .hero-section {
-    background: linear-gradient(135deg, #2b2d42 0%, #3d405b 40%, #4a4e69 70%, #3d405b 100%);
+    background: linear-gradient(135deg, #1e140a 0%, #3a2210 50%, #4a2e14 100%);
 }
-body.light-mode .main-footer {
-    background: #2b2d42;
-}
+body.light-mode .main-footer  { background: #1e140a; }
 body.light-mode .success-section {
-    background: linear-gradient(135deg, var(--cream-light), var(--cream));
+    background: linear-gradient(135deg, #f5ede0, #ede4d3);
 }
+body.light-mode .section-title { color: #1e140a; }
+body.light-mode .product-image-wrap {
+    background: linear-gradient(135deg, #f5ede0, #ede4d3);
+}
+body.light-mode .btn-add-cart {
+    background: linear-gradient(135deg, #3a2210, #6b4423);
+}
+body.light-mode .filter-btn {
+    background: #fff8ef;
+    border-color: #d9c9b0;
+    color: #4a2e14;
+}
+body.light-mode .page-hero {
+    background: linear-gradient(135deg, #1e140a, #3a2210);
+}
+body.light-mode .cart-item:hover { background: #f5ede0; }
+body.light-mode .cart-item-name  { color: #1e140a; }
+body.light-mode .qty-btn { background: #f5ede0; color: #3a2210; }
+body.light-mode .order-summary-header { background: linear-gradient(135deg, #1e140a, #3a2210); }
 
 /* ======= DARK MODE TOGGLE BUTTON ======= */
 .theme-toggle-btn {
@@ -541,6 +571,20 @@ body {
     flex-direction: column;
     border: 1px solid var(--border-color);
     position: relative;
+    cursor: pointer;
+}
+/* Clickable overlay that covers the whole card */
+.product-card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+/* Buttons and forms above the overlay */
+.product-actions,
+.product-info form,
+.product-info a {
+    position: relative;
+    z-index: 2;
 }
 .product-card:hover {
     transform: translateY(-8px);
@@ -1222,6 +1266,246 @@ body {
 .scroll-to-top:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 28px rgba(200, 146, 42, 0.6);
+}
+
+/* =====================================================
+   ✨ ROYAL ANIMATIONS
+   ===================================================== */
+
+/* ── MARQUEE TICKER ── */
+@keyframes marqueeScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+.marquee-bar {
+    background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown-medium) 100%);
+    overflow: hidden;
+    padding: 14px 0;
+    border-top:    1px solid rgba(200,146,42,0.25);
+    border-bottom: 1px solid rgba(200,146,42,0.25);
+    position: relative;
+}
+.marquee-bar::before,
+.marquee-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+}
+.marquee-bar::before {
+    right: 0;
+    background: linear-gradient(to left, var(--brown-dark), transparent);
+}
+.marquee-bar::after {
+    left: 0;
+    background: linear-gradient(to right, var(--brown-dark), transparent);
+}
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marqueeScroll 22s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 32px;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold-light);
+    font-family: 'Tajawal', sans-serif;
+    letter-spacing: 0.5px;
+}
+.marquee-sep {
+    color: var(--gold);
+    font-size: 10px;
+    opacity: 0.7;
+}
+/* light mode overrides */
+body.light-mode .marquee-bar {
+    background: linear-gradient(135deg, #1e140a 0%, #3a2210 100%);
+}
+body.light-mode .marquee-bar::before {
+    background: linear-gradient(to left, #1e140a, transparent);
+}
+body.light-mode .marquee-bar::after {
+    background: linear-gradient(to right, #1e140a, transparent);
+}
+
+/* ── Gold Particles keyframe ── */
+@keyframes royalFloat {
+    0%   { opacity: 0;   transform: translateY(0)     rotate(0deg)   scale(0.6); }
+    10%  { opacity: 0.9; }
+    90%  { opacity: 0.5; }
+    100% { opacity: 0;   transform: translateY(-110vh) rotate(360deg) scale(1.4); }
+}
+
+/* ── Scroll Reveal ── */
+.reveal-hidden {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal-visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* ── Brand shimmer ── */
+@keyframes shimmerMove {
+    0%   { background-position: -300% center; }
+    100% { background-position:  300% center; }
+}
+.brand-shimmer {
+    background: linear-gradient(
+        90deg,
+        var(--gold) 0%,
+        var(--gold-light) 30%,
+        #fff8e0 50%,
+        var(--gold-light) 70%,
+        var(--gold) 100%
+    ) !important;
+    background-size: 300% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    animation: shimmerMove 3.5s linear infinite;
+}
+
+/* ── Navbar entrance ── */
+@keyframes navSlideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+}
+.main-navbar {
+    animation: navSlideDown 0.6s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+/* ── Hero image glow pulse ── */
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0   rgba(200,146,42,0); }
+    50%       { box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(200,146,42,0.3); }
+}
+.hero-image-main {
+    animation: glowPulse 4s ease-in-out infinite;
+}
+
+/* ── Product card shine sweep on hover ── */
+.product-card {
+    overflow: hidden;
+}
+.product-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        115deg,
+        transparent 30%,
+        rgba(255,255,255,0.18) 50%,
+        transparent 70%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.55s ease;
+    pointer-events: none;
+    z-index: 5;
+}
+.product-card:hover::after {
+    transform: translateX(100%);
+}
+
+/* ── Feature card icon bounce ── */
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0)   scale(1);    }
+    40%       { transform: translateY(-8px) scale(1.1); }
+    70%       { transform: translateY(-3px) scale(1.05);}
+}
+.feature-card:hover .feature-icon {
+    animation: iconBounce 0.6s ease;
+}
+
+/* ── Stat numbers glow ── */
+.stat-num {
+    text-shadow: 0 0 20px rgba(200,146,42,0.5);
+    transition: text-shadow 0.3s;
+}
+.hero-stat:hover .stat-num {
+    text-shadow: 0 0 35px rgba(200,146,42,0.9);
+}
+
+/* ── Cart button heartbeat ── */
+@keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    14%      { transform: scale(1.06); }
+    28%      { transform: scale(1); }
+    42%      { transform: scale(1.04); }
+    56%      { transform: scale(1); }
+}
+.cart-btn:focus,
+.cart-btn:active {
+    animation: heartbeat 0.9s ease;
+}
+
+/* ── Smooth underline on nav links ── */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 50%;
+    left: 50%;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: left 0.3s ease, right 0.3s ease;
+    opacity: 0;
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+    right: 10px;
+    left: 10px;
+    opacity: 1;
+}
+
+/* ── Section badge entrance ── */
+@keyframes badgePop {
+    0%   { transform: scale(0.7); opacity: 0; }
+    70%  { transform: scale(1.08); }
+    100% { transform: scale(1);   opacity: 1; }
+}
+.section-badge {
+    animation: badgePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+/* ── Footer links slide ── */
+.footer-links a,
+.footer-contact li {
+    transition: var(--transition), padding-right 0.25s;
+}
+.footer-links a:hover { padding-right: 8px; }
+
+/* ── WhatsApp float wiggle ── */
+@keyframes wiggle {
+    0%,100% { transform: rotate(0deg)   scale(1);    }
+    20%      { transform: rotate(-12deg) scale(1.1);  }
+    40%      { transform: rotate( 10deg) scale(1.08); }
+    60%      { transform: rotate( -8deg) scale(1.05); }
+    80%      { transform: rotate(  5deg) scale(1.02); }
+}
+.whatsapp-float:hover {
+    animation: wiggle 0.7s ease;
+}
+
+/* ── Scroll-to-top spin on hover ── */
+.scroll-to-top:hover i {
+    display: inline-block;
+    animation: spinUp 0.4s ease;
+}
+@keyframes spinUp {
+    from { transform: translateY(4px) rotate(-20deg); opacity: 0.5; }
+    to   { transform: translateY(0)   rotate(0deg);   opacity: 1;   }
 }
 
 /* ======= RESPONSIVE ======= */

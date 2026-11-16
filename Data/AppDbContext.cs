@@ -68,6 +68,7 @@ namespace RoyalPerfume.Data
                 e.Property(p => p.Concentration).HasMaxLength(100);
                 e.Property(p => p.Price).HasColumnType("decimal(18,2)");
                 e.Property(p => p.OldPrice).HasColumnType("decimal(18,2)");
+                e.Property(p => p.AdditionalImages).HasMaxLength(2000);
                 e.Ignore(p => p.DiscountPercent); // computed property — not stored
             });
         }
