@@ -39,6 +39,31 @@
         <span class="admin-date">إجمالي: @orders.Count طلب</span>
     </div>
 
+    <!-- ══ Search Bar ══ -->
+    <div class="admin-card" style="margin-bottom:16px;padding:16px 20px;">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <div style="position:relative;flex:1;min-width:200px;">
+                <i class="fas fa-search" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#666;font-size:14px;pointer-events:none;"></i>
+                <input id="searchOrderNum" type="text" placeholder="🔍 ابحث برقم الطلب..." dir="ltr"
+                       oninput="filterOrders()"
+                       style="width:100%;padding:10px 40px 10px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(200,146,42,0.25);border-radius:10px;color:#fff;font-family:Cairo,sans-serif;font-size:14px;outline:none;">
+            </div>
+            <div style="position:relative;flex:1;min-width:200px;">
+                <i class="fas fa-phone" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#666;font-size:14px;pointer-events:none;"></i>
+                <input id="searchPhone" type="text" placeholder="📞 ابحث برقم التليفون..." dir="ltr"
+                       oninput="filterOrders()"
+                       style="width:100%;padding:10px 40px 10px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(200,146,42,0.25);border-radius:10px;color:#fff;font-family:Cairo,sans-serif;font-size:14px;outline:none;">
+            </div>
+            <button onclick="clearSearch()"
+                    style="padding:10px 18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#aaa;font-family:Cairo,sans-serif;font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s;"
+                    onmouseover="this.style.borderColor='rgba(200,146,42,0.5)';this.style.color='#c8922a'"
+                    onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='#aaa'">
+                <i class="fas fa-times"></i> مسح
+            </button>
+            <span id="searchCount" style="color:#888;font-size:13px;white-space:nowrap;"></span>
+        </div>
+    </div>
+
     @if (!orders.Any())
     {
         <div class="admin-card">
@@ -71,7 +96,9 @@
                     <tbody>
                         @foreach (var order in orders)
                         {
-                            <tr>
+                            <tr class="order-main-row" 
+                                data-ordernum="@order.OrderNumber.ToLower()"
+                                data-phone="@order.Phone">
                                 <td><span class="order-num">#@order.OrderNumber</span></td>
                                 <td style="font-size:12px;color:#888;">@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td><strong>@order.FullName</strong></td>
@@ -239,6 +266,41 @@ function updateStatus(orderNumber, status) {
             showToast('تم تحديث حالة الطلب ✅', '#16a34a');
         }
     });
+}
+
+function filterOrders() {
+    const q1 = document.getElementById('searchOrderNum').value.toLowerCase().trim();
+    const q2 = document.getElementById('searchPhone').value.replace(/\s/g,'').trim();
+    const rows = document.querySelectorAll('tr.order-main-row');
+    let visible = 0;
+    rows.forEach(row => {
+        const num   = row.dataset.ordernum || '';
+        const phone = row.dataset.phone    || '';
+        const matchNum   = !q1 || num.includes(q1);
+        const matchPhone = !q2 || phone.includes(q2);
+        const show = matchNum && matchPhone;
+        row.style.display = show ? '' : 'none';
+        // also toggle the items sub-row (sibling)
+        const next = row.nextElementSibling;
+        if (next && next.classList.contains('order-items-row')) {
+            next.style.display = show ? '' : 'none';
+        }
+        if (show) visible++;
+    });
+    const total = rows.length;
+    const countEl = document.getElementById('searchCount');
+    if (q1 || q2) {
+        countEl.textContent = `${visible} من ${total} طلب`;
+        countEl.style.color = visible === 0 ? '#dc2626' : '#c8922a';
+    } else {
+        countEl.textContent = '';
+    }
+}
+
+function clearSearch() {
+    document.getElementById('searchOrderNum').value = '';
+    document.getElementById('searchPhone').value = '';
+    filterOrders();
 }
 
 function showToast(msg, color) {

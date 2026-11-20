@@ -11,10 +11,17 @@ wwwroot\images\product3.jpg
 wwwroot\images\product4.jpg
 wwwroot\images\product5.jpg
 wwwroot\images\product6.jpg
+wwwroot\images\product_1001_20261119184040.jpeg
 wwwroot\images\product_1001_extra_20261116135312_1.JPG
+wwwroot\images\product_1001_extra_20261116140607_1.JPG
+wwwroot\images\product_1001_extra_20261119184040_0.jpeg
 wwwroot\images\product_12_20260922013527.jpeg
 wwwroot\images\product_12_20261112234146.png
+wwwroot\images\product_12_20261119184014.jpeg
 wwwroot\images\product_12_extra_20261113164702_0.jpg
+wwwroot\images\product_13_20261119184027.jpeg
+wwwroot\images\product_13_extra_20261116140558_0.jpg
+wwwroot\images\product_13_extra_20261119184027_0.jpeg
 wwwroot\images\product_new_20260921235352.jpeg
 wwwroot\images\product_new_20260922003405.jpeg
 wwwroot\images\product_new_20260922013051.jpeg
